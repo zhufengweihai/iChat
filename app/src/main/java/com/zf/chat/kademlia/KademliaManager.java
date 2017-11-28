@@ -17,11 +17,6 @@ import de.cgrotz.kademlia.storage.LocalDataAccess;
 public class KademliaManager {
 
     private void init(Context context) {
-        LocalDataAccess localStorage = new DbDataAccess(context);
-        Kademlia kademlia = new Kademlia(Key.build("1"), "1", localStorage);
 
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(kademlia::republishKeys, 1, 5, TimeUnit.MINUTES);
-        scheduler.scheduleAtFixedRate(kademlia::refreshBuckets, 5, 60, TimeUnit.MINUTES);
     }
 }

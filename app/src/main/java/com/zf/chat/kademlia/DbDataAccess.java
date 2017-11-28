@@ -77,7 +77,7 @@ public class DbDataAccess extends SQLiteOpenHelper implements KadDataDAO {
 
     @Override
     public void save(RoutingTable routingTable) {
-        routingTable.getNodes()
+        routingTable.getNodes();
     }
 
     @Override

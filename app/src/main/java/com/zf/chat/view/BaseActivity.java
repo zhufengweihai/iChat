@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.blankj.utilcode.util.ActivityUtils;
 import com.zf.chat.R;
 import com.zf.chat.common.Utils;
 import com.zf.chat.dialog.FlippingLoadingDialog;
@@ -68,7 +67,8 @@ public abstract class BaseActivity extends Activity {
      *
      */
     public void finishWithAnim() {
-        ActivityUtils.finishActivity(this, R.anim.push_right_in, R.anim.push_right_out);
+        finish();
+        overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
     }
 
     /**
