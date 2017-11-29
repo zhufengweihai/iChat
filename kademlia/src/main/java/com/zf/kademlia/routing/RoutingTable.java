@@ -1,11 +1,12 @@
 package com.zf.kademlia.routing;
 
+import com.zf.kademlia.node.Key;
+import com.zf.kademlia.node.Node;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.cgrotz.kademlia.node.Key;
-import de.cgrotz.kademlia.node.Node;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -13,7 +14,6 @@ import lombok.ToString;
  * @author zhufeng7
  * @date 2017-11-28.
  */
-
 @ToString
 @EqualsAndHashCode
 public class RoutingTable {
