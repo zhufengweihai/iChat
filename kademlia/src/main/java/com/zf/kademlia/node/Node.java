@@ -1,9 +1,7 @@
 package com.zf.kademlia.node;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
 /**
  * @author zhufeng7
@@ -11,13 +9,18 @@ import lombok.NonNull;
  */
 @Data
 @EqualsAndHashCode(of = {"id"})
-@Builder
 public class Node implements Comparable<Node> {
     private Key id = null;
     private String ip = null;
     private int port = -1;
-    @Builder.Default
     private long lastSeen = System.currentTimeMillis();
+
+    public Node(Key id, String ip, int port, long lastSeen) {
+        this.id = id;
+        this.ip = ip;
+        this.port = port;
+        this.lastSeen = lastSeen;
+    }
 
     @Override
     public int compareTo(Node o) {
@@ -25,5 +28,10 @@ public class Node implements Comparable<Node> {
             return 0;
         }
         return (this.lastSeen > o.lastSeen) ? 1 : -1;
+    }
+
+    @Override
+    public String toString() {
+        return id.toString() + ',' + ip + ',' + port + ',' + lastSeen;
     }
 }

@@ -28,6 +28,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.0.1'
     implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'io.netty:netty-all:4.1.16.Final'
+    implementation 'org.greenrobot:essentials:3.0.0-RC1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
     compileOnly 'org.projectlombok:lombok:1.16.18'
     annotationProcessor "org.projectlombok:lombok:1.16.18"
     testImplementation 'junit:junit:4.12'

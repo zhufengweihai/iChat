@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import lombok.Data;
 
+import static com.zf.kademlia.Commons.K;
+
 /**
  * @author zhufeng7
  * @date 2017-11-28.
@@ -16,17 +18,15 @@ public class Bucket {
     private final int bucketId;
     private final TreeSet<Node> nodes;
     private final TreeSet<Node> replacementNodes;
-    private final int k;
 
-    public Bucket(int k, int bucketId) {
-        this.k = k;
+    public Bucket(int bucketId) {
         this.bucketId = bucketId;
         this.nodes = new TreeSet<>();
         this.replacementNodes = new TreeSet<>();
     }
 
     public void addNode(Node node) {
-        if (nodes.size() < k) {
+        if (nodes.size() < K) {
             nodes.add(node);
             return;
         }
@@ -38,7 +38,7 @@ public class Bucket {
                 last.setLastSeen(System.currentTimeMillis());
                 nodes.add(last);
                 replacementNodes.add(node);
-                if (replacementNodes.size() > k) {
+                if (replacementNodes.size() > K) {
                     replacementNodes.remove(replacementNodes.last());
                 }
             });
@@ -70,7 +70,7 @@ public class Bucket {
         }
 
         // Fill up with reachable nodes from replacement set
-        while (nodes.size() < k && !replacementNodes.isEmpty()) {
+        while (nodes.size() < K && !replacementNodes.isEmpty()) {
             Node node = replacementNodes.first();
             try {
                 KademliaClient.instance().sendPing(node, pong -> {
@@ -88,7 +88,7 @@ public class Bucket {
         nodes.remove(nodeToRetire);
 
         // Fill up with reachable nodes from replacement set
-        while (nodes.size() < k && !replacementNodes.isEmpty()) {
+        while (nodes.size() < K && !replacementNodes.isEmpty()) {
             Node node = replacementNodes.first();
             try {
                 KademliaClient.instance().sendPing(node, pong -> {
