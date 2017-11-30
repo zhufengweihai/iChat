@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 27
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
@@ -11,30 +12,28 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     buildToolsVersion '27.0.1'
 }
 
 dependencies {
-    implementation project(":retry")
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation 'com.android.support:appcompat-v7:27.0.1'
     implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'io.netty:netty-all:4.1.16.Final'
-    implementation 'org.greenrobot:essentials:3.0.0-RC1'
-    implementation 'org.greenrobot:eventbus:3.1.1'
 
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    annotationProcessor "org.projectlombok:lombok:1.16.18"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

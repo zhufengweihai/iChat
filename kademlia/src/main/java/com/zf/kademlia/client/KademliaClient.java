@@ -14,6 +14,11 @@ import com.zf.kademlia.protocol.Ping;
 import com.zf.kademlia.protocol.Pong;
 import com.zf.kademlia.protocol.Store;
 import com.zf.kademlia.protocol.ValueReply;
+import com.zf.retry.CallExecutor;
+import com.zf.retry.config.RetryConfig;
+import com.zf.retry.config.RetryConfigBuilder;
+import com.zf.retry.listener.OnFailureListener;
+import com.zf.retry.listener.OnSuccessListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
 import io.netty.bootstrap.Bootstrap;
@@ -65,6 +71,24 @@ public class KademliaClient {
     private void send(Node node, long seqId, Message msg) throws TimeoutException {
         kademliaClientHandler.registerHandler(seqId, consumer);
 
+        Callable<Void> callable = () -> {
+            Channel channel = bootstrap.bind(0).sync().channel();
+            InetSocketAddress address = new InetSocketAddress(node.getIp(), node.getPort());
+            DatagramPacket packet = new DatagramPacket(codec.encode(msg), address);
+            channel.writeAndFlush(packet).sync();
+            if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
+                LOGGER.warn("request with seqId={} on node={} timed out.", seqId, localNode);
+                throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");
+            }
+            return null;
+        };
+
+        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
+                .withDelayBetweenTries(1000).withExponentialBackoff().build();
+        CallExecutor executor = new CallExecutor(config);
+        executor.registerRetryListener((OnFailureListener) results -> { /** some code to execute on failure **/});
+        executor.registerRetryListener((OnSuccessListener) results -> { /** some code to execute on success **/});
+        executor.executeAsync(callable);
 
         Retry.builder().interval(1000).retries(3).sender(() -> {
             try {
