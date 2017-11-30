@@ -1,5 +1,6 @@
 package com.zf.kademlia.client;
 
+import com.zf.kademlia.Commons;
 import com.zf.kademlia.KadDataManager;
 import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
@@ -64,20 +65,18 @@ public class KademliaClient {
     private void send(Node node, long seqId, Message msg) throws TimeoutException {
         kademliaClientHandler.registerHandler(seqId, consumer);
 
+
         Retry.builder().interval(1000).retries(3).sender(() -> {
             try {
                 Channel channel = bootstrap.bind(0).sync().channel();
-                LOGGER.debug("requesting seqId={} msg={} on host={}:{}", seqId, msg, udpListener.getHost(),
-                        udpListener.getPort());
-                channel.writeAndFlush(new DatagramPacket(codec.encode(msg), new InetSocketAddress(udpListener.getHost
-                        (), udpListener.getPort()))).sync();
-
-                if (!channel.closeFuture().await(config.getNetworkTimeoutMs())) {
+                LOGGER.debug("requesting seqId={} msg={} on host={}:{}", seqId, msg, node.getIp(), node.getPort());
+                channel.writeAndFlush(new DatagramPacket(codec.encode(msg), new InetSocketAddress(node.getIp(), node.getPort()))).sync();
+                if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
                     LOGGER.warn("request with seqId={} on node={} timed out.", seqId, localNode);
                     throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");
                 }
             } catch (InterruptedException e) {
-                throw new TimeoutException(e);
+                throw new TimeoutException("time out");
             } catch (UnsupportedEncodingException e) {
                 LOGGER.error("unsupported encoding for encoding msg", e);
                 throw new RuntimeException(e);
