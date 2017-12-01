@@ -22,25 +22,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CallExecutor<T> {
-
     private Logger logger = LoggerFactory.getLogger(CallExecutor.class);
 
     private RetryConfig config;
-
     private AfterFailedTryListener afterFailedTryListener;
-
     private BeforeNextTryListener beforeNextTryListener;
-
     private OnFailureListener onFailureListener;
-
     private OnSuccessListener onSuccessListener;
-
     private OnCompletionListener onCompletionListener;
-
     private ExecutorService executorService;
-
     private Exception lastKnownExceptionThatCausedRetry;
-
     private CallResults<T> results = new CallResults<>();
 
     public CallExecutor() {
