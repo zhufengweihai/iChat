@@ -15,10 +15,10 @@ import com.zf.kademlia.protocol.Pong;
 import com.zf.kademlia.protocol.Store;
 import com.zf.kademlia.protocol.ValueReply;
 import com.zf.retry.CallExecutor;
+import com.zf.retry.CallResults;
+import com.zf.retry.RetryListener;
 import com.zf.retry.config.RetryConfig;
 import com.zf.retry.config.RetryConfigBuilder;
-import com.zf.retry.listener.OnFailureListener;
-import com.zf.retry.listener.OnSuccessListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,15 +86,20 @@ public class KademliaClient {
         RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
                 .withDelayBetweenTries(1000).withExponentialBackoff().build();
         CallExecutor executor = new CallExecutor(config);
-        executor.registerRetryListener((OnFailureListener) results -> { /** some code to execute on failure **/});
-        executor.registerRetryListener((OnSuccessListener) results -> { /** some code to execute on success **/});
+        executor.registerRetryListener(new RetryListener() {
+            @Override
+            public void onSuccess(CallResults results) {
+
+            }
+        });
         executor.executeAsync(callable);
 
         Retry.builder().interval(1000).retries(3).sender(() -> {
             try {
                 Channel channel = bootstrap.bind(0).sync().channel();
                 LOGGER.debug("requesting seqId={} msg={} on host={}:{}", seqId, msg, node.getIp(), node.getPort());
-                channel.writeAndFlush(new DatagramPacket(codec.encode(msg), new InetSocketAddress(node.getIp(), node.getPort()))).sync();
+                channel.writeAndFlush(new DatagramPacket(codec.encode(msg), new InetSocketAddress(node.getIp(), node
+                        .getPort()))).sync();
                 if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
                     LOGGER.warn("request with seqId={} on node={} timed out.", seqId, localNode);
                     throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");

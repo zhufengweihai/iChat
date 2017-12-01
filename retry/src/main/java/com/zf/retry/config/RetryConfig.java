@@ -1,20 +1,19 @@
 package com.zf.retry.config;
 
-
 import com.zf.retry.backoff.BackoffStrategy;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class RetryConfig {
-    private Boolean retryOnAnyException = false;
+    private boolean retryOnAnyException = false;
     private Set<Class<? extends Exception>> retryOnSpecificExceptions = new HashSet<>();
     private Set<Class<? extends Exception>> retryOnAnyExceptionExcluding = new HashSet<>();
-    private Integer maxNumberOfTries;
+    private int maxNumberOfTries;
     private long delayBetweenRetries;
     private BackoffStrategy backoffStrategy;
 
-    public Boolean isRetryOnAnyException() {
+    public boolean isRetryOnAnyException() {
         return retryOnAnyException;
     }
 
@@ -38,7 +37,7 @@ public class RetryConfig {
         this.retryOnAnyExceptionExcluding = retryOnAnyExceptionExcluding;
     }
 
-    public Integer getMaxNumberOfTries() {
+    public int getMaxNumberOfTries() {
         return maxNumberOfTries;
     }
 
@@ -64,17 +63,5 @@ public class RetryConfig {
 
     public void setBackoffStrategy(BackoffStrategy backoffStrategy) {
         this.backoffStrategy = backoffStrategy;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("RetryConfig{");
-        sb.append("retryOnAnyException=").append(retryOnAnyException);
-        sb.append(", retryOnSpecificExceptions=").append(retryOnSpecificExceptions);
-        sb.append(", maxNumberOfTries=").append(maxNumberOfTries);
-        sb.append(", delayBetweenRetries=").append(delayBetweenRetries);
-        sb.append(", backoffStrategy=").append(backoffStrategy);
-        sb.append('}');
-        return sb.toString();
     }
 }

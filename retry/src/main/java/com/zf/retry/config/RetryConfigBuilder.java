@@ -1,6 +1,5 @@
 package com.zf.retry.config;
 
-
 import com.zf.retry.backoff.BackoffStrategy;
 import com.zf.retry.backoff.ExponentialBackoffStrategy;
 import com.zf.retry.backoff.FibonacciBackoffStrategy;
@@ -39,19 +38,15 @@ public class RetryConfigBuilder {
 
     public RetryConfigBuilder retryOnAnyException() {
         validateExceptionStrategyAddition();
-
         config.setRetryOnAnyException(true);
-
         exceptionStrategySpecified = true;
         return this;
     }
 
     public RetryConfigBuilder failOnAnyException() {
         validateExceptionStrategyAddition();
-
         config.setRetryOnAnyException(false);
         config.setRetryOnSpecificExceptions(new HashSet<>());
-
         exceptionStrategySpecified = true;
         return this;
     }
@@ -59,10 +54,8 @@ public class RetryConfigBuilder {
     @SafeVarargs
     public final RetryConfigBuilder retryOnSpecificExceptions(Class<? extends Exception>... exceptions) {
         validateExceptionStrategyAddition();
-
         Set<Class<? extends Exception>> setOfExceptions = new HashSet<>(Arrays.asList(exceptions));
         config.setRetryOnSpecificExceptions(setOfExceptions);
-
         exceptionStrategySpecified = true;
         return this;
     }
@@ -70,10 +63,8 @@ public class RetryConfigBuilder {
     @SafeVarargs
     public final RetryConfigBuilder retryOnAnyExceptionExcluding(Class<? extends Exception>... exceptions) {
         validateExceptionStrategyAddition();
-
         Set<Class<? extends Exception>> setOfExceptions = new HashSet<>(Arrays.asList(exceptions));
         config.setRetryOnAnyExceptionExcluding(setOfExceptions);
-
         exceptionStrategySpecified = true;
         return this;
     }
@@ -123,21 +114,8 @@ public class RetryConfigBuilder {
         return this;
     }
 
-    public RetryConfigBuilder withRandomBackoff() {
-        validateBackoffStrategyAddition();
-        config.setBackoffStrategy(new RandomBackoffStrategy());
-        return this;
-    }
-
-    public RetryConfigBuilder withRandomExponentialBackoff() {
-        validateBackoffStrategyAddition();
-        config.setBackoffStrategy(new RandomExponentialBackoffStrategy());
-        return this;
-    }
-
     public RetryConfig build() {
         validateConfig();
-
         return config;
     }
 
@@ -150,7 +128,7 @@ public class RetryConfigBuilder {
             throw new InvalidRetryConfigException("Retry config must specify a backoff strategy!");
         }
 
-        if (null == config.getMaxNumberOfTries()) {
+        if (config.getMaxNumberOfTries() <= 0) {
             throw new InvalidRetryConfigException("Retry config must specify a maximum number of tries!");
         }
 
@@ -193,10 +171,4 @@ public class RetryConfigBuilder {
         return new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(7).withDelayBetweenTries(5,
                 TimeUnit.SECONDS).withFibonacciBackoff();
     }
-
-    public RetryConfigBuilder randomExpBackoff10Tries60Sec() {
-        return new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(10).withDelayBetweenTries(60,
-                TimeUnit.SECONDS).withRandomExponentialBackoff();
-    }
-
 }
