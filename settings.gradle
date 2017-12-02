@@ -1,1 +1,1 @@
-include ':app', ':kademlia', ':retry'
+include ':app', ':kademlia', ':retry', ':common'
