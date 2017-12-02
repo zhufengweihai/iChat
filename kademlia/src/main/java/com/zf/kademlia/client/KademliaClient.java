@@ -1,5 +1,6 @@
 package com.zf.kademlia.client;
 
+import com.zf.common.CommonManager;
 import com.zf.kademlia.Commons;
 import com.zf.kademlia.KadDataManager;
 import com.zf.kademlia.node.Key;
@@ -15,7 +16,7 @@ import com.zf.kademlia.protocol.Pong;
 import com.zf.kademlia.protocol.Store;
 import com.zf.kademlia.protocol.ValueReply;
 import com.zf.retry.CallExecutor;
-import com.zf.retry.CallResults;
+import com.zf.retry.CallResult;
 import com.zf.retry.RetryListener;
 import com.zf.retry.config.RetryConfig;
 import com.zf.retry.config.RetryConfigBuilder;
@@ -70,47 +71,24 @@ public class KademliaClient {
 
     private void send(Node node, long seqId, Message msg) throws TimeoutException {
         kademliaClientHandler.registerHandler(seqId, consumer);
+        createTask(node, seqId, msg);
+        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
+                .withDelayBetweenTries(1000).withExponentialBackoff().build();
+        CallExecutor executor = new CallExecutor(config, CommonManager.instance().getExecutorService());
+        executor.executeAsync(createTask(node, seqId, msg));
+    }
 
-        Callable<Void> callable = () -> {
+    private Callable createTask(Node node, long seqId, Message msg) {
+        return () -> {
             Channel channel = bootstrap.bind(0).sync().channel();
             InetSocketAddress address = new InetSocketAddress(node.getIp(), node.getPort());
             DatagramPacket packet = new DatagramPacket(codec.encode(msg), address);
             channel.writeAndFlush(packet).sync();
             if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
-                LOGGER.warn("request with seqId={} on node={} timed out.", seqId, localNode);
                 throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");
             }
             return null;
         };
-
-        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
-                .withDelayBetweenTries(1000).withExponentialBackoff().build();
-        CallExecutor executor = new CallExecutor(config);
-        executor.registerRetryListener(new RetryListener() {
-            @Override
-            public void onSuccess(CallResults results) {
-
-            }
-        });
-        executor.executeAsync(callable);
-
-        Retry.builder().interval(1000).retries(3).sender(() -> {
-            try {
-                Channel channel = bootstrap.bind(0).sync().channel();
-                LOGGER.debug("requesting seqId={} msg={} on host={}:{}", seqId, msg, node.getIp(), node.getPort());
-                channel.writeAndFlush(new DatagramPacket(codec.encode(msg), new InetSocketAddress(node.getIp(), node
-                        .getPort()))).sync();
-                if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
-                    LOGGER.warn("request with seqId={} on node={} timed out.", seqId, localNode);
-                    throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");
-                }
-            } catch (InterruptedException e) {
-                throw new TimeoutException("time out");
-            } catch (UnsupportedEncodingException e) {
-                LOGGER.error("unsupported encoding for encoding msg", e);
-                throw new RuntimeException(e);
-            }
-        }).build().execute();
     }
 
     public void sendPing(Node node, Consumer<Pong> pongConsumer) throws TimeoutException {

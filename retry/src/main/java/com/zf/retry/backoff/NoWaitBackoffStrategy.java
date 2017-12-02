@@ -1,11 +1,9 @@
 package com.zf.retry.backoff;
 
-import java.time.Duration;
-
 public class NoWaitBackoffStrategy implements BackoffStrategy {
 
     @Override
-    public long getMillisToWait(int numberOfTriesFailed, Duration delayBetweenAttempts) {
+    public long getMillisToWait(int numberOfTriesFailed, long delayBetweenAttempts) {
         return 0;
     }
 }

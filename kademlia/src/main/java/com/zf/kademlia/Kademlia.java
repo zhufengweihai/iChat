@@ -1,6 +1,6 @@
 package com.zf.kademlia;
 
-import com.zf.kademlia.client.MessageEvent;
+import com.zf.kademlia.client.KadMessageEvent;
 import com.zf.kademlia.routing.RoutingTable;
 
 import org.greenrobot.eventbus.EventBus;
@@ -22,7 +22,7 @@ public class Kademlia {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent event) {/* Do something */}
+    public void onMessageEvent(KadMessageEvent event) {/* Do something */}
 
     public void close() {
         EventBus.getDefault().unregister(this);

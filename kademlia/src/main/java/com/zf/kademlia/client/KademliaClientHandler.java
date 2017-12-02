@@ -1,13 +1,14 @@
 package com.zf.kademlia.client;
 
+import com.zf.kademlia.protocol.Codec;
+import com.zf.kademlia.protocol.Message;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.cgrotz.kademlia.protocol.Codec;
-import de.cgrotz.kademlia.protocol.Message;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,17 +20,12 @@ import io.netty.channel.socket.DatagramPacket;
  */
 @ChannelHandler.Sharable
 public class KademliaClientHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(KademliaClientHandler.class);
-
     private final Codec codec = new Codec();
-
     private Map<Long, Consumer<Message>> handlers = new HashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
         Message message = codec.decode(packet.content());
-        LOGGER.debug("receiving response seqId={} msg={} from host={}:{}", message.getSeqId(), message, packet.sender
-                ().getHostName(), packet.sender().getPort());
         handlers.get(message.getSeqId()).accept(message);
         handlers.remove(message.getSeqId());
         ctx.close();

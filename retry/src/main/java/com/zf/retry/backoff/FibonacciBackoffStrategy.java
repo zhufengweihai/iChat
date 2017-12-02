@@ -1,14 +1,11 @@
 package com.zf.retry.backoff;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FibonacciBackoffStrategy implements BackoffStrategy {
-
     private List<Integer> fibonacciNumbers;
-
-    public static final int MAX_NUM_OF_FIB_NUMBERS = 25;
+    private static final int MAX_NUM_OF_FIB_NUMBERS = 25;
 
     public FibonacciBackoffStrategy() {
         fibonacciNumbers = new ArrayList<>();
@@ -23,14 +20,14 @@ public class FibonacciBackoffStrategy implements BackoffStrategy {
     }
 
     @Override
-    public long getMillisToWait(int numberOfTriesFailed, Duration delayBetweenAttempts) {
+    public long getMillisToWait(int numberOfTriesFailed, long delayBetweenAttempts) {
         int fibNumber;
         try {
             fibNumber = fibonacciNumbers.get(numberOfTriesFailed);
         } catch (IndexOutOfBoundsException e) {
             fibNumber = fibonacciNumbers.get(MAX_NUM_OF_FIB_NUMBERS - 1);
         }
-        return delayBetweenAttempts.toMillis() * fibNumber;
+        return delayBetweenAttempts * fibNumber;
     }
 
     public List<Integer> getFibonacciNumbers() {

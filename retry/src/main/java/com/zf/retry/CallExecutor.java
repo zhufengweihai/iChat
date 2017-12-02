@@ -6,9 +6,10 @@ import com.zf.retry.config.RetryConfigBuilder;
 import com.zf.retry.exception.RetriesExhaustedException;
 import com.zf.retry.exception.UnexpectedException;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -16,58 +17,69 @@ public class CallExecutor<T> {
     private RetryConfig config;
     private RetryListener<T> retryListener;
     private Exception lastKnownExceptionThatCausedRetry;
+    private ExecutorService executorService = null;
 
-
-    public CallExecutor() {
-        this(new RetryConfigBuilder().fixedBackoff5Tries10Sec().build());
+    public CallExecutor(ExecutorService executorService) {
+        this(new RetryConfigBuilder().fixedBackoff5Tries10Sec().build(), executorService);
     }
 
-    public CallExecutor(RetryConfig config) {
+    public CallExecutor(RetryConfig config, ExecutorService executorService) {
         this.config = config;
+        this.executorService = executorService;
     }
 
-    public CallResults<T> execute(Callable<T> callable) throws RetriesExhaustedException, UnexpectedException {
-        CallResults<T> results = new CallResults<>();
+    public CallResult<T> execute(Callable<T> callable) throws RetriesExhaustedException, UnexpectedException {
+        CallResult<T> results = new CallResult<>();
         results.setStartTime(System.currentTimeMillis());
         int maxTries = config.getMaxNumberOfTries();
         T result = null;
         int tries = 0;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
         FutureTask<T> futureTask = new FutureTask<T>(callable);
         for (; tries < maxTries && result == null; tries++) {
-            result = tryCall(executor, futureTask);
+            result = tryCall(executorService, futureTask);
             if (result == null) {
                 handleRetry(results, tries + 1);
             }
         }
-        executor.shutdown();
         refreshRetryResults(results, result != null, tries);
-        results.setEndTime(System.currentTimeMillis());
         postExecutionCleanup(results, result);
         return results;
     }
 
-    public void executeAsync(Callable<T> callable) {
-        new Thread(new FutureTask<>(() -> {
-            CallResults<T> results = new CallResults<>();
+    public void executeAsyncWithResult(Callable<T> callable) {
+        executorService.submit(() -> {
+            CallResult<T> results = new CallResult<>();
             results.setStartTime(System.currentTimeMillis());
             int maxTries = config.getMaxNumberOfTries();
             T result = null;
             int tries = 0;
             for (; tries < maxTries && result == null; tries++) {
-                result = tryCall(callable);
+                result = tryCallWithResult(callable);
                 if (result == null) {
                     handleRetry(results, tries + 1);
                 }
             }
             refreshRetryResults(results, result != null, tries);
-            results.setEndTime(System.currentTimeMillis());
+            EventBus.getDefault().post(new RetryCallResultMessage(results));
             postExecutionCleanup(results, result);
             return results;
-        })).start();
+        });
     }
 
-    private void postExecutionCleanup(CallResults<T> results, T result) {
+    public void executeAsync(Callable task) {
+        executorService.execute(() -> {
+            CallResult<T> results = new CallResult<>();
+            results.setStartTime(System.currentTimeMillis());
+            int maxTries = config.getMaxNumberOfTries();
+            boolean result = false;
+            int tries = 0;
+            for (; tries < maxTries && !result; tries++) {
+                result = tryCall(task);
+            }
+        });
+    }
+
+    private void postExecutionCleanup(CallResult<T> results, T result) {
         if (result == null) {
             if (null != retryListener) {
                 retryListener.onFailure(results);
@@ -80,7 +92,6 @@ public class CallExecutor<T> {
                 retryListener.onSuccess(results);
             }
         }
-
         if (null != retryListener) {
             retryListener.onCompletion(results);
         }
@@ -99,7 +110,7 @@ public class CallExecutor<T> {
         }
     }
 
-    private T tryCall(Callable<T> task) throws UnexpectedException {
+    private T tryCallWithResult(Callable<T> task) throws UnexpectedException {
         try {
             return task.call();
         } catch (Exception e) {
@@ -111,7 +122,16 @@ public class CallExecutor<T> {
         return null;
     }
 
-    private void handleRetry(CallResults<T> results, int tries) {
+    private boolean tryCall(Callable task) {
+        try {
+            task.call();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private void handleRetry(CallResult<T> results, int tries) {
         refreshRetryResults(results, false, tries);
         if (null != retryListener) {
             retryListener.immediatelyAfterFailedTry(results);
@@ -122,13 +142,14 @@ public class CallExecutor<T> {
         }
     }
 
-    private void refreshRetryResults(CallResults<T> results, boolean success, int tries) {
+    private void refreshRetryResults(CallResult<T> results, boolean success, int tries) {
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - results.getStartTime();
         results.setTotalTries(tries);
         results.setTotalElapsedDuration(elapsed);
         results.setSuccessful(success);
         results.setLastExceptionThatCausedRetry(lastKnownExceptionThatCausedRetry);
+        results.setEndTime(System.currentTimeMillis());
     }
 
     private void sleep(long millis, int tries) {
@@ -156,7 +177,7 @@ public class CallExecutor<T> {
         return true;
     }
 
-    public void registerRetryListener(RetryListener<T> listener) {
-        this.retryListener = listener;
-    }
+//    public void registerRetryListener(RetryListener<T> listener) {
+//        this.retryListener = listener;
+//    }
 }

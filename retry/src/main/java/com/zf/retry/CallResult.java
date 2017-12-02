@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CallResults<T> {
+public class CallResult<T> {
     private long startTime;
     private long endTime;
     private boolean successful;
