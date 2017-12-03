@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Pong extends Message {
+public class Pong extends KadMessage {
 
     public Pong(long seqId, Node origin) {
         super(MessageType.PONG, seqId, origin);

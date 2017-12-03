@@ -8,7 +8,7 @@ import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.Codec;
 import com.zf.kademlia.protocol.FindNode;
 import com.zf.kademlia.protocol.FindValue;
-import com.zf.kademlia.protocol.Message;
+import com.zf.kademlia.protocol.KadMessage;
 import com.zf.kademlia.protocol.MessageType;
 import com.zf.kademlia.protocol.NodeReply;
 import com.zf.kademlia.protocol.Ping;
@@ -16,15 +16,12 @@ import com.zf.kademlia.protocol.Pong;
 import com.zf.kademlia.protocol.Store;
 import com.zf.kademlia.protocol.ValueReply;
 import com.zf.retry.CallExecutor;
-import com.zf.retry.CallResult;
-import com.zf.retry.RetryListener;
 import com.zf.retry.config.RetryConfig;
 import com.zf.retry.config.RetryConfigBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.security.SecureRandom;
 import java.util.List;
@@ -69,16 +66,15 @@ public class KademliaClient {
                 (kademliaClientHandler);
     }
 
-    private void send(Node node, long seqId, Message msg) throws TimeoutException {
-        kademliaClientHandler.registerHandler(seqId, consumer);
-        createTask(node, seqId, msg);
+    public void send(Node node, KadMessage msg) throws TimeoutException {
+        long seqId = CommonManager.instance().randomLong();
         RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
                 .withDelayBetweenTries(1000).withExponentialBackoff().build();
         CallExecutor executor = new CallExecutor(config, CommonManager.instance().getExecutorService());
         executor.executeAsync(createTask(node, seqId, msg));
     }
 
-    private Callable createTask(Node node, long seqId, Message msg) {
+    private Callable createTask(Node node, long seqId, KadMessage msg) {
         return () -> {
             Channel channel = bootstrap.bind(0).sync().channel();
             InetSocketAddress address = new InetSocketAddress(node.getIp(), node.getPort());
@@ -89,22 +85,6 @@ public class KademliaClient {
             }
             return null;
         };
-    }
-
-    public void sendPing(Node node, Consumer<Pong> pongConsumer) throws TimeoutException {
-        long seqId = random.nextLong();
-        send(node, seqId, new Ping(seqId, localNode), msg -> {
-            pongConsumer.accept((Pong) msg);
-        });
-    }
-
-
-    public void sendFindNode(Node node, Key key, Consumer<List<Node>> callback) throws TimeoutException {
-        long seqId = random.nextLong();
-        send(node, seqId, new FindNode(seqId, localNode, key), message -> {
-            NodeReply nodeReply = (NodeReply) message;
-            callback.accept(nodeReply.getNodes());
-        });
     }
 
     public void sendFindValue(Node node, Key key, Consumer<NodeReply> nodeReplyConsumer, Consumer<ValueReply>

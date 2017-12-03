@@ -56,9 +56,7 @@ public class KademliaClient {
         this.localNode = localNode;
         this.config = config;
         this.group = new NioEventLoopGroup();
-
         Runtime.getRuntime().addShutdownHook(new Thread(group::shutdownGracefully));
-
         this.bootstrap = new Bootstrap();
         kademliaClientHandler = new KademliaClientHandler();
         bootstrap.group(group).channel(NioDatagramChannel.class).option(ChannelOption.SO_BROADCAST, false).handler

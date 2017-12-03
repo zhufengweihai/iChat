@@ -16,7 +16,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class Store extends Message {
+public class Store extends KadMessage {
     private final String value;
     private final Key key;
 

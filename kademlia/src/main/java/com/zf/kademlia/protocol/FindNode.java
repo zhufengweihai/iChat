@@ -16,7 +16,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class FindNode extends Message {
+public class FindNode extends KadMessage {
     private Key lookupId = null;
 
     public FindNode(long seqId, Node origin, Key lookupId) {

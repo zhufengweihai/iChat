@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class NodeReply extends Message {
+public class NodeReply extends KadMessage {
     private List<Node> nodes;
 
     public NodeReply(long seqId, Node origin, List<Node> nodes) {

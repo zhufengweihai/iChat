@@ -1,11 +1,12 @@
 package com.zf.kademlia;
 
-import com.zf.kademlia.client.KadMessageEvent;
+import com.zf.kademlia.client.KademliaClient;
+import com.zf.kademlia.node.Node;
+import com.zf.kademlia.operation.BaseOperation;
+import com.zf.kademlia.operation.PingOperation;
 import com.zf.kademlia.routing.RoutingTable;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +22,10 @@ public class Kademlia {
         EventBus.getDefault().register(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(KadMessageEvent event) {/* Do something */}
+    public void bootstrap(Node bootstrapNode) {
+        BaseOperation operation = new PingOperation(bootstrapNode);
+        KademliaClient.instance().send();
+    }
 
     public void close() {
         EventBus.getDefault().unregister(this);

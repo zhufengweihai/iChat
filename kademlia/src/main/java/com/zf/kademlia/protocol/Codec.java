@@ -20,7 +20,7 @@ import io.netty.util.CharsetUtil;
  * @date 2017-11-29.
  */
 public class Codec {
-    public Message decode(ByteBuf buffer) throws IOException {
+    public KadMessage decode(ByteBuf buffer) throws IOException {
         String message = buffer.toString(CharsetUtil.UTF_8);
         String[] parts = message.split("\\|");
         long seqId = Long.parseLong(parts[1]);
@@ -119,12 +119,12 @@ public class Codec {
         return byteBuf;
     }
 
-    private void encodeHeader(ByteBuf byteBuf, Message msg) {
+    private void encodeHeader(ByteBuf byteBuf, KadMessage msg) {
         byteBuf.writeCharSequence(msg.getType().name() + "|" + msg.getSeqId(), CharsetUtil.UTF_8);
         byteBuf.writeCharSequence("|" + msg.getOrigin(), CharsetUtil.UTF_8);
     }
 
-    public ByteBuf encode(Message msg) throws UnsupportedEncodingException {
+    public ByteBuf encode(KadMessage msg) throws UnsupportedEncodingException {
         if (msg instanceof ValueReply) {
             return encode((ValueReply) msg);
         } else if (msg instanceof FindNode) {

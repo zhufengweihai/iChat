@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2017-11-29.
  */
 @Data
-public abstract class Message {
+public abstract class KadMessage {
     private final MessageType type;
     private final long seqId;
     private final Node origin;
