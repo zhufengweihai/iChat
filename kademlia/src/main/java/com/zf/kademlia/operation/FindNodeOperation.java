@@ -2,16 +2,13 @@ package com.zf.kademlia.operation;
 
 import com.zf.common.CommonManager;
 import com.zf.kademlia.KadDataManager;
-import com.zf.kademlia.client.KademliaClient;
 import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.FindNode;
 import com.zf.kademlia.protocol.KadMessage;
 import com.zf.kademlia.protocol.NodeReply;
-import com.zf.kademlia.routing.RoutingTable;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author zhufeng
@@ -35,9 +32,6 @@ public class FindNodeOperation extends BaseOperation {
     public void onOperationMessage(OperationMessage message) {
         NodeReply nodeReply = (NodeReply) message.getMessage();
         List<Node> nodes = nodeReply.getNodes();
-        RoutingTable routingTable = KadDataManager.instance().getRoutingTable();
-        for (Node node : nodes) {
-            routingTable.addNode(node);
-        }
+        KadDataManager.instance().getRoutingTable().addNodes(nodes);
     }
 }

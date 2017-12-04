@@ -1,5 +1,6 @@
 package com.zf.kademlia.operation;
 
+import com.zf.kademlia.KadDataManager;
 import com.zf.kademlia.client.KademliaClient;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.KadMessage;
@@ -22,9 +23,15 @@ public abstract class BaseOperation {
 
     public abstract KadMessage createMessage();
 
-    public void execute() throws TimeoutException {
-        KademliaClient.instance().send(node, createMessage());
+    public void execute() {
+        try {
+            KademliaClient.instance().send(node, createMessage());
+        } catch (TimeoutException e) {
+            KadDataManager.instance().getRoutingTable().retireNode(node);
+        }
     }
 
-    public abstract void onOperationMessage(OperationMessage message);
+    public void onOperationMessage(OperationMessage message) {
+
+    }
 }

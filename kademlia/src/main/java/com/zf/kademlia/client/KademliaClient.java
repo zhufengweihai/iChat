@@ -101,13 +101,6 @@ public class KademliaClient {
         });
     }
 
-    public void sendContentToNode(Node node, Key key, String value) throws TimeoutException {
-        final long seqId = random.nextLong();
-        send(node, seqId, new Store(seqId, localNode, key, value), message -> {
-
-        });
-    }
-
     public void close() {
         try {
             group.shutdownGracefully().await();
