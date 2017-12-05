@@ -1,8 +1,7 @@
 package com.zf.kademlia;
 
-import com.zf.kademlia.client.KademliaClient;
 import com.zf.kademlia.node.Node;
-import com.zf.kademlia.operation.BaseOperation;
+import com.zf.kademlia.operation.FindNodeOperation;
 import com.zf.kademlia.operation.PingOperation;
 import com.zf.kademlia.routing.RoutingTable;
 
@@ -23,8 +22,8 @@ public class Kademlia {
     }
 
     public void bootstrap(Node bootstrapNode) {
-        BaseOperation operation = new PingOperation(bootstrapNode);
-        KademliaClient.instance().send();
+        new PingOperation(bootstrapNode).execute();
+        new FindNodeOperation(bootstrapNode, KadDataManager.instance().getLocalNode().getId()).execute();
     }
 
     public void close() {
