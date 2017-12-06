@@ -1,5 +1,6 @@
 package com.zf.kademlia.routing;
 
+import com.zf.kademlia.Commons;
 import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
 
@@ -64,12 +65,12 @@ public class RoutingTable {
         return nodes;
     }
 
-    public List<Node> findClosest(Key lookupId, int numberOfRequiredNodes) {
+    public List<Node> findClosest(Key lookupId) {
         List<Node> nodes = getSortedNodes(lookupId);
-        if (numberOfRequiredNodes >= nodes.size()) {
+        if (Commons.K >= nodes.size()) {
             return nodes;
         }
-        return nodes.subList(0, numberOfRequiredNodes);
+        return nodes.subList(0, Commons.K);
     }
 
     public void retireNode(Node node) {
