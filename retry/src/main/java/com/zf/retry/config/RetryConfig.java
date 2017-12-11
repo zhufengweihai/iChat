@@ -1,8 +1,5 @@
 package com.zf.retry.config;
 
-import com.zf.retry.backoff.BackoffStrategy;
-
-import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Builder;
@@ -23,7 +20,13 @@ public class RetryConfig {
     private final long tryTimeout;
     private final long delayBetweenRetries;
 
+    public static RetryConfigBuilder defaults(int maxNumberOfTries, long tryTimeout, long delayBetweenRetries) {
+        return RetryConfig.builder().retryOnAnyException(true).maxNumberOfTries(maxNumberOfTries).tryTimeout
+                (tryTimeout).delayBetweenRetries(delayBetweenRetries);
+    }
+
     public static RetryConfigBuilder defaults() {
-        return RetryConfig.builder().retryOnAnyException(true).maxNumberOfTries(3).tryTimeout(5000).delayBetweenRetries(1000);
+        return RetryConfig.builder().retryOnAnyException(true).maxNumberOfTries(5000).tryTimeout(3)
+                .delayBetweenRetries(5000);
     }
 }

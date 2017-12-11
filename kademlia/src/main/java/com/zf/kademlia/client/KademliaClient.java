@@ -2,15 +2,9 @@ package com.zf.kademlia.client;
 
 import com.zf.common.CommonManager;
 import com.zf.kademlia.Commons;
-import com.zf.kademlia.KadDataManager;
-import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.Codec;
-import com.zf.kademlia.protocol.FindValue;
 import com.zf.kademlia.protocol.KadMessage;
-import com.zf.kademlia.protocol.MessageType;
-import com.zf.kademlia.protocol.NodeReply;
-import com.zf.kademlia.protocol.ValueReply;
 import com.zf.retry.CallExecutor;
 import com.zf.retry.config.RetryConfig;
 
@@ -20,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.security.SecureRandom;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeoutException;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -28,6 +21,10 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+
+import static com.zf.kademlia.Commons.NETWORK_TIMEOUT;
+import static com.zf.kademlia.Commons.RETRIES_COUNT;
+import static com.zf.kademlia.Commons.RETRIES_INTERVAL;
 
 /**
  * @author zhufeng
@@ -42,28 +39,27 @@ public class KademliaClient {
     private Bootstrap bootstrap = null;
     private NioEventLoopGroup group = null;
     private Codec codec = new Codec();
-    private Node localNode = KadDataManager.instance().getLocalNode();
 
     private KademliaClient() {
+        init();
     }
 
     public static KademliaClient instance() {
         return instance;
     }
 
-    public void init() {
-        this.group = new NioEventLoopGroup();
+    private void init() {
+        group = new NioEventLoopGroup();
         Runtime.getRuntime().addShutdownHook(new Thread(group::shutdownGracefully));
         this.bootstrap = new Bootstrap();
         kademliaClientHandler = new KademliaClientHandler();
-        bootstrap.group(group).channel(NioDatagramChannel.class).option(ChannelOption.SO_BROADCAST, false).handler
-                (kademliaClientHandler);
+        Class<NioDatagramChannel> aClass = NioDatagramChannel.class;
+        bootstrap.group(group).channel(aClass).option(ChannelOption.SO_BROADCAST, false).handler(kademliaClientHandler);
     }
 
     public void send(Node node, KadMessage msg) {
         long seqId = CommonManager.instance().randomLong();
-        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(Commons.RETRIES_COUNT)
-                .withDelayBetweenTries(Commons.RETRIES_INTERVAL).withExponentialBackoff().build();
+        RetryConfig config = RetryConfig.defaults(RETRIES_COUNT, NETWORK_TIMEOUT, RETRIES_INTERVAL).build();
         CallExecutor executor = new CallExecutor(config, CommonManager.instance().getExecutorService());
         executor.executeAsync(createTask(node, seqId, msg));
     }
@@ -75,31 +71,17 @@ public class KademliaClient {
             DatagramPacket packet = new DatagramPacket(codec.encode(msg), address);
             channel.writeAndFlush(packet).sync();
             if (!channel.closeFuture().await(Commons.NETWORK_TIMEOUT)) {
-                throw new RuntimeException("request with seqId=" + seqId + " on node=" + localNode + " timed out.");
+                throw new RuntimeException("request with seqId=" + seqId + " on node=" + node + " timed out.");
             }
             return null;
         };
-    }
-
-    public void sendFindValue(Node node, Key key, Consumer<NodeReply> nodeReplyConsumer, Consumer<ValueReply>
-            valueReplyConsumer) throws TimeoutException {
-        long seqId = random.nextLong();
-        send(node, seqId, new FindValue(seqId, localNode, key), message -> {
-            if (message.getType() == MessageType.NODE_REPLY) {
-                NodeReply nodeReply = (NodeReply) message;
-                nodeReplyConsumer.accept(nodeReply);
-            } else if (message.getType() == MessageType.VALUE_REPLY) {
-                ValueReply valueReply = (ValueReply) message;
-                valueReplyConsumer.accept(valueReply);
-            }
-        });
     }
 
     public void close() {
         try {
             group.shutdownGracefully().await();
         } catch (InterruptedException e) {
-
+            e.printStackTrace();
         }
     }
 }

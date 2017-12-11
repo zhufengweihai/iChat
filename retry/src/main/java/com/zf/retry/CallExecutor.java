@@ -53,7 +53,9 @@ public class CallExecutor<T> {
                 if (tryCall(task)) {
                     return;
                 }
-                sleep(config.getDelayBetweenRetries());
+                if (tries < maxTries - 1) {
+                    sleep(config.getDelayBetweenRetries());
+                }
             }
         });
     }

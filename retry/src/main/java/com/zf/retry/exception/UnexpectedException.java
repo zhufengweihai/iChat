@@ -5,7 +5,7 @@ package com.zf.retry.exception;
  * RetryConfig.
  * @author zhufeng
  */
-public class UnexpectedException extends Retry4jException {
+public class UnexpectedException extends RetryException {
 
     private Throwable cause;
 

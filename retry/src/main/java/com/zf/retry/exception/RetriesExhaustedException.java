@@ -5,7 +5,7 @@ import com.zf.retry.CallResult;
 /**
  * This exception represents a call execution that never succeeded after exhausting all retries.
  */
-public class RetriesExhaustedException extends Retry4jException {
+public class RetriesExhaustedException extends RetryException {
 
     private CallResult results;
 

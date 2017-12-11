@@ -10,6 +10,7 @@ import com.zf.kademlia.protocol.MessageType;
 import com.zf.kademlia.protocol.Store;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author zhufeng
@@ -28,11 +29,13 @@ public class StoreOperation extends BaseOperation {
     @Override
     public void execute() {
         List<Node> nodes = KadDataManager.instance().getRoutingTable().findClosest(key);
-        for (Node node :
-                nodes) {
-
+        for (Node node : nodes) {
+            try {
+                KademliaClient.instance().send(node, createMessage());
+            } catch (TimeoutException e) {
+                KadDataManager.instance().getRoutingTable().retireNode(node);
+            }
         }
-        new FindNodeOperation(KadDataManager.instance().getLocalNode(), key).execute();
     }
 
     @Override
