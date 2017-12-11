@@ -2,17 +2,17 @@ package com.zf.retry;
 
 
 import com.zf.retry.config.RetryConfig;
-import com.zf.retry.config.RetryConfigBuilder;
 import com.zf.retry.exception.RetriesExhaustedException;
 import com.zf.retry.exception.UnexpectedException;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author zhufeng
+ */
 public class CallExecutor<T> {
     private RetryConfig config;
     private RetryListener<T> retryListener;
@@ -20,7 +20,7 @@ public class CallExecutor<T> {
     private ExecutorService executorService = null;
 
     public CallExecutor(ExecutorService executorService) {
-        this(new RetryConfigBuilder().fixedBackoff5Tries10Sec().build(), executorService);
+        this(RetryConfig.defaults().build(), executorService);
     }
 
     public CallExecutor(RetryConfig config, ExecutorService executorService) {
@@ -28,7 +28,7 @@ public class CallExecutor<T> {
         this.executorService = executorService;
     }
 
-    public CallResult<T> execute(Callable<T> callable) throws RetriesExhaustedException, UnexpectedException {
+    public CallResult<T> execute(Callable<T> callable) throws UnexpectedException {
         CallResult<T> results = new CallResult<>();
         results.setStartTime(System.currentTimeMillis());
         int maxTries = config.getMaxNumberOfTries();
@@ -46,35 +46,14 @@ public class CallExecutor<T> {
         return results;
     }
 
-    public void executeAsyncWithResult(Callable<T> callable) {
-        executorService.submit(() -> {
-            CallResult<T> results = new CallResult<>();
-            results.setStartTime(System.currentTimeMillis());
-            int maxTries = config.getMaxNumberOfTries();
-            T result = null;
-            int tries = 0;
-            for (; tries < maxTries && result == null; tries++) {
-                result = tryCallWithResult(callable);
-                if (result == null) {
-                    handleRetry(results, tries + 1);
-                }
-            }
-            refreshRetryResults(results, result != null, tries);
-            EventBus.getDefault().post(new RetryCallResultMessage(results));
-            postExecutionCleanup(results, result);
-            return results;
-        });
-    }
-
     public void executeAsync(Callable task) {
         executorService.execute(() -> {
-            CallResult<T> results = new CallResult<>();
-            results.setStartTime(System.currentTimeMillis());
             int maxTries = config.getMaxNumberOfTries();
-            boolean result = false;
-            int tries = 0;
-            for (; tries < maxTries && !result; tries++) {
-                result = tryCall(task);
+            for (int tries = 0; tries < maxTries; tries++) {
+                if (tryCall(task)) {
+                    return;
+                }
+                sleep(config.getDelayBetweenRetries());
             }
         });
     }
@@ -110,18 +89,6 @@ public class CallExecutor<T> {
         }
     }
 
-    private T tryCallWithResult(Callable<T> task) throws UnexpectedException {
-        try {
-            return task.call();
-        } catch (Exception e) {
-            if (shouldThrowException(e)) {
-                throw new UnexpectedException(e);
-            }
-            lastKnownExceptionThatCausedRetry = e;
-        }
-        return null;
-    }
-
     private boolean tryCall(Callable task) {
         try {
             task.call();
@@ -136,7 +103,7 @@ public class CallExecutor<T> {
         if (null != retryListener) {
             retryListener.immediatelyAfterFailedTry(results);
         }
-        sleep(config.getDelayBetweenRetries(), tries);
+        sleep(config.getDelayBetweenRetries());
         if (null != retryListener) {
             retryListener.immediatelyBeforeNextTry(results);
         }
@@ -152,10 +119,9 @@ public class CallExecutor<T> {
         results.setEndTime(System.currentTimeMillis());
     }
 
-    private void sleep(long millis, int tries) {
-        long millisToSleep = config.getBackoffStrategy().getMillisToWait(tries, millis);
+    private void sleep(long millis) {
         try {
-            TimeUnit.MILLISECONDS.sleep(millisToSleep);
+            TimeUnit.MILLISECONDS.sleep(millis);
         } catch (InterruptedException ignored) {
         }
     }

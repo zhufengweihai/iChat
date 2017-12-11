@@ -6,25 +6,19 @@ import com.zf.kademlia.KadDataManager;
 import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.Codec;
-import com.zf.kademlia.protocol.FindNode;
 import com.zf.kademlia.protocol.FindValue;
 import com.zf.kademlia.protocol.KadMessage;
 import com.zf.kademlia.protocol.MessageType;
 import com.zf.kademlia.protocol.NodeReply;
-import com.zf.kademlia.protocol.Ping;
-import com.zf.kademlia.protocol.Pong;
-import com.zf.kademlia.protocol.Store;
 import com.zf.kademlia.protocol.ValueReply;
 import com.zf.retry.CallExecutor;
 import com.zf.retry.config.RetryConfig;
-import com.zf.retry.config.RetryConfigBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
@@ -66,10 +60,10 @@ public class KademliaClient {
                 (kademliaClientHandler);
     }
 
-    public void send(Node node, KadMessage msg) throws TimeoutException {
+    public void send(Node node, KadMessage msg) {
         long seqId = CommonManager.instance().randomLong();
-        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(3)
-                .withDelayBetweenTries(1000).withExponentialBackoff().build();
+        RetryConfig config = new RetryConfigBuilder().retryOnAnyException().withMaxNumberOfTries(Commons.RETRIES_COUNT)
+                .withDelayBetweenTries(Commons.RETRIES_INTERVAL).withExponentialBackoff().build();
         CallExecutor executor = new CallExecutor(config, CommonManager.instance().getExecutorService());
         executor.executeAsync(createTask(node, seqId, msg));
     }

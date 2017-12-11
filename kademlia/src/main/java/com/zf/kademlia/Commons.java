@@ -1,11 +1,12 @@
 package com.zf.kademlia;
 
 /**
- * Created by zhufeng7 on 2017-11-29.
+ * @author zhufeng
  */
-
 public interface Commons {
-    int K = 20;
-    int TIMEOUT = 5000;//in ms
-    int NETWORK_TIMEOUT = 5000;//in ms
+    int K = 8;
+    int TIMEOUT = 5000;
+    int NETWORK_TIMEOUT = 5000;
+    int RETRIES_COUNT = 2;
+    int RETRIES_INTERVAL = 1000;
 }
