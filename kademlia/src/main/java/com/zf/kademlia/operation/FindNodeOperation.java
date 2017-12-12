@@ -29,8 +29,8 @@ public class FindNodeOperation extends BaseOperation {
     }
 
     @Override
-    public void onOperationMessage(OperationMessage message) {
-        NodeReply nodeReply = (NodeReply) message.getMessage();
+    public void onResponse(KadMessage message) {
+        NodeReply nodeReply = (NodeReply) message;
         List<Node> nodes = nodeReply.getNodes();
         KadDataManager.instance().getRoutingTable().addNodes(nodes);
     }

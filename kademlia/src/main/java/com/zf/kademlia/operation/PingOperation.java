@@ -2,15 +2,9 @@ package com.zf.kademlia.operation;
 
 import com.zf.common.CommonManager;
 import com.zf.kademlia.KadDataManager;
-import com.zf.kademlia.client.KademliaClient;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.KadMessage;
 import com.zf.kademlia.protocol.Ping;
-import com.zf.kademlia.protocol.Pong;
-
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author zhufeng
@@ -27,9 +21,7 @@ public class PingOperation extends BaseOperation {
     }
 
     @Override
-    @Subscribe
-    public void onOperationMessage(OperationMessage message) {
-        Pong pong = (Pong) message.getMessage();
-        KadDataManager.instance().getRoutingTable().addNode(pong.getOrigin());
+    public void onResponse(KadMessage message) {
+        KadDataManager.instance().getRoutingTable().addNode(message.getOrigin());
     }
 }

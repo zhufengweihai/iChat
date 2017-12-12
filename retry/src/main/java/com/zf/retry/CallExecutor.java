@@ -2,7 +2,7 @@ package com.zf.retry;
 
 
 import com.zf.retry.config.RetryConfig;
-import com.zf.retry.exception.RetriesExhaustedException;
+import com.zf.retry.exception.RetryException;
 import com.zf.retry.exception.UnexpectedException;
 
 import java.util.concurrent.Callable;
@@ -28,7 +28,7 @@ public class CallExecutor<T> {
         this.executorService = executorService;
     }
 
-    public CallResult<T> execute(Callable<T> callable) throws UnexpectedException {
+    public CallResult<T> execute(Callable<T> callable) throws RetryException {
         CallResult<T> results = new CallResult<>();
         results.setStartTime(System.currentTimeMillis());
         int maxTries = config.getMaxNumberOfTries();
@@ -47,25 +47,26 @@ public class CallExecutor<T> {
     }
 
     public void executeAsync(Callable task) {
-        executorService.execute(() -> {
+        executorService.submit((Callable<Void>) () -> {
             int maxTries = config.getMaxNumberOfTries();
             for (int tries = 0; tries < maxTries; tries++) {
                 if (tryCall(task)) {
-                    return;
+                    return null;
                 }
                 if (tries < maxTries - 1) {
                     sleep(config.getDelayBetweenRetries());
                 }
             }
+            throw new RetryException("Call failed");
         });
     }
 
-    private void postExecutionCleanup(CallResult<T> results, T result) {
+    private void postExecutionCleanup(CallResult<T> results, T result) throws RetryException {
         if (result == null) {
             if (null != retryListener) {
                 retryListener.onFailure(results);
             } else {
-                throw new RetriesExhaustedException("Call failed", results);
+                throw new RetryException("Call failed");
             }
         } else {
             results.setResult(result);

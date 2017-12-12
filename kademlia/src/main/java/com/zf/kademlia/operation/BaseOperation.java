@@ -5,8 +5,6 @@ import com.zf.kademlia.client.KademliaClient;
 import com.zf.kademlia.node.Node;
 import com.zf.kademlia.protocol.KadMessage;
 
-import java.util.concurrent.TimeoutException;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -24,14 +22,13 @@ public abstract class BaseOperation {
     public abstract KadMessage createMessage();
 
     public void execute() {
-        try {
-            KademliaClient.instance().send(node, createMessage());
-        } catch (TimeoutException e) {
-            KadDataManager.instance().getRoutingTable().retireNode(node);
-        }
+        KademliaClient.instance().send(node, createMessage(), this);
     }
 
-    public void onOperationMessage(OperationMessage message) {
+    public void onResponse(KadMessage message) {
+    }
 
+    public void onFailed(Node node) {
+        KadDataManager.instance().getRoutingTable().retireNode(node);
     }
 }

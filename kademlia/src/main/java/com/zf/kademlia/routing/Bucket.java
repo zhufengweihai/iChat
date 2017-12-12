@@ -49,14 +49,14 @@ public class Bucket {
         }
     }
 
-    public TreeSet<Node> getNodes() {
+    TreeSet<Node> getNodes() {
         TreeSet<Node> set = new TreeSet<>();
         set.addAll(nodes);
         return set;
     }
 
     public void refreshBucket() {
-        @SuppressWarnings("unchecked") TreeSet<Node> copySet = new TreeSet(nodes);
+        TreeSet<Node> copySet = (TreeSet<Node>) nodes.clone();
         // Check nodes on reachability and update
         for (Node node : copySet) {
             try {
@@ -85,10 +85,9 @@ public class Bucket {
         }
     }
 
-    public void retireNode(Node nodeToRetire) {
+    void retireNode(Node nodeToRetire) {
         nodes.remove(nodeToRetire);
-
-        // Fill up with reachable nodes from replacement set
+        // 从备用列表中选取一个在线节点填充到列表中
         while (nodes.size() < K && !replacementNodes.isEmpty()) {
             Node node = replacementNodes.first();
             try {

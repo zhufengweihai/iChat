@@ -1,6 +1,7 @@
 package com.zf.kademlia.routing;
 
 import com.zf.kademlia.Commons;
+import com.zf.kademlia.KadDataManager;
 import com.zf.kademlia.node.Key;
 import com.zf.kademlia.node.Node;
 
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
@@ -16,16 +16,13 @@ import lombok.ToString;
  * @date 2017-11-28.
  */
 @ToString
-@EqualsAndHashCode
 public class RoutingTable {
-    private final Key localNodeId;
     private final Bucket[] buckets;
 
-    public RoutingTable(int k, Key localNodeId) {
-        this.localNodeId = localNodeId;
+    public RoutingTable() {
         buckets = new Bucket[Key.ID_LENGTH];
         for (int i = 0; i < Key.ID_LENGTH; i++) {
-            buckets[i] = new Bucket(k, i);
+            buckets[i] = new Bucket(i);
         }
     }
 
@@ -33,13 +30,13 @@ public class RoutingTable {
      * 计算给定节点应放置的桶ID; bucketId是根据多远的距离来计算的节点远离本地节点。
      */
     public final int getBucketId(Key nid) {
-        int bId = this.localNodeId.getDistance(nid) - 1;
+        int bId = KadDataManager.instance().getLocalNode().getId().getDistance(nid) - 1;
         //如果我们试图将一个节点插入到它自己的路由表中，那么存储区ID将是-1，所以将其设置为0桶
         return bId < 0 ? 0 : bId;
     }
 
     public void addNode(Node node) {
-        if (!node.getId().equals(localNodeId)) {
+        if (!node.equals(KadDataManager.instance().getLocalNode())) {
             buckets[getBucketId(node.getId())].addNode(node);
         }
     }

@@ -142,7 +142,7 @@ public class Codec {
         } else if (msg instanceof Pong) {
             return encode((Pong) msg);
         } else {
-            throw new RuntimeException("Unknown msg type:" + msg);
+            throw new UnsupportedEncodingException("Unknown msg type:" + msg);
         }
     }
 }
