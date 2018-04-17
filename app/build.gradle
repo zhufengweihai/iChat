@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
-        applicationId "com.zf.chat"
-        minSdkVersion 16
-        targetSdkVersion 26
+        applicationId "com.zf.ichat"
+        minSdkVersion 17
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -17,30 +16,36 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-greendao {
-    schemaVersion 1
-}
-
 dependencies {
-    implementation project(":common")
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'io.netty:netty-all:4.1.16.Final'
-    implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation 'org.greenrobot:greendao:3.2.2'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.6'
-    implementation 'org.greenrobot:essentials:3.0.0-RC1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation "android.arch.persistence.room:runtime:1.1.0-beta2"
+    implementation "com.google.code.gson:gson:2.8.2"
+    implementation "jp.wasabeef:glide-transformations:3.1.1"
+    implementation "com.lzy.widget:ninegridview:0.2.0"
+    implementation "android.arch.lifecycle:runtime:1.1.1"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "net.coobird:thumbnailator:0.4.8"
 
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    annotationProcessor "org.projectlombok:lombok:1.16.18"
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.0-beta2"
+    annotationProcessor "org.projectlombok:lombok:1.16.20"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation "android.arch.persistence.room:testing:1.1.0-beta2"
 }
