@@ -1,7 +1,6 @@
 package com.zf.ichat.main;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -9,12 +8,6 @@ import android.view.ViewGroup.LayoutParams;
 
 import com.zf.ichat.BaseActivity;
 import com.zf.ichat.R;
-import com.zf.ichat.data.ChatDao;
-import com.zf.ichat.data.ChatDatabase;
-import com.zf.ichat.data.Contact;
-import com.zf.ichat.data.Convr;
-import com.zf.ichat.data.Message;
-import com.zf.ichat.data.MessageType;
 import com.zf.ichat.widget.DMTabHost;
 import com.zf.ichat.widget.TitlePopup;
 
@@ -40,7 +33,7 @@ public class MainActivity extends BaseActivity {
             // 更新 UI
         });
 
-        AsyncTask.execute(() -> {
+       /* AsyncTask.execute(() -> {
             ChatDao chatDao = ChatDatabase.instance(this).chatDao();
             Contact[] contacts = new Contact[10];
             for (int i = 0; i < 10; i++) {
@@ -76,7 +69,7 @@ public class MainActivity extends BaseActivity {
                 messages[i] = message;
             }
             chatDao.insertMessages(messages);
-        });
+        });*/
     }
 
     @Override

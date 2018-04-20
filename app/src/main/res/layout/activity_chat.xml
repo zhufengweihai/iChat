@@ -35,7 +35,9 @@
             android:background="@color/windows_color"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="10dp"/>
+            android:paddingBottom="10dp"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:reverseLayout="true"/>
 
         <View
             android:id="@+id/divider"

@@ -7,12 +7,22 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.lzy.ninegrid.NineGridView;
+import com.zf.ichat.data.Contact;
 
 public class ChatApplication extends Application {
+    private Contact self;
     @Override
     public void onCreate() {
         super.onCreate();
         NineGridView.setImageLoader(new GlideImageLoader());
+    }
+
+    public Contact getSelf() {
+        return self;
+    }
+
+    public void setSelf(Contact self) {
+        this.self = self;
     }
 
     /**
