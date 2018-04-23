@@ -8,8 +8,11 @@ import android.view.Menu;
 
 import com.zf.ichat.BaseActivity;
 import com.zf.ichat.R;
+import com.zf.ichat.data.Conversation;
 
 public class ChatActivity extends BaseActivity {
+    public static final String INTENT = "conversation";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,13 +33,12 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
-
         ChatViewModel viewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
-        viewModel.getCurrentConvr().observe(this, convr -> {
-            MessageAdapter adapter = new MessageAdapter(convr);
-            chatView.setAdapter(adapter);
-            viewModel.getMessages().observe(this, adapter::submitList);
-        });
+
+        Conversation convr = (Conversation) getIntent().getSerializableExtra(INTENT);
+        MessageAdapter adapter = new MessageAdapter(convr);
+        chatView.setAdapter(adapter);
+        viewModel.getMessages(convr.getContactId()).observe(this, adapter::submitList);
     }
 
     @Override

@@ -16,11 +16,14 @@
 
 package com.zf.ichat.data;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 @Database(entities = {Contact.class, Convr.class, Message.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
@@ -33,9 +36,54 @@ public abstract class ChatDatabase extends RoomDatabase {
     public static ChatDatabase instance(Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(context.getApplicationContext(), ChatDatabase.class, "chat.db").build();
+                Context ac = context.getApplicationContext();
+                INSTANCE = Room.databaseBuilder(ac, ChatDatabase.class, "chat.db").addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        initData(context);
+                    }
+                }).build();
             }
             return INSTANCE;
         }
+    }
+
+    private static void initData(Context context) {
+        AsyncTask.execute(() -> {
+            ChatDao chatDao = ChatDatabase.instance(context).chatDao();
+            Contact[] contacts = new Contact[10];
+            for (int i = 0; i < 10; i++) {
+                Contact contact = new Contact();
+                contact.setId((short) i);
+                contact.setAvatarUrl("https://imgsa.baidu" + "" + "" + "" +
+                        ".com/baike/pic/item/d01373f082025aaf192b6064f3edab64034f1a07.jpg");
+                String s = "zf" + i;
+                contact.setUserName(s);
+                contact.setNickname(s);
+                contacts[i] = contact;
+            }
+            chatDao.insertContacts(contacts);
+
+            Convr[] convrs = new Convr[10];
+            for (int i = 0; i < 10; i++) {
+                Convr convr = new Convr();
+                convr.setContactId((short) i);
+                convrs[i] = convr;
+            }
+            chatDao.insertConvrs(convrs);
+
+            Message[] messages = new Message[10];
+            for (int i = 0; i < 10; i++) {
+                Message message = new Message();
+                message.setContactId((short) 0);
+                message.setCreateTime(i);
+                boolean b = i % 2 == 0;
+                message.setBelong(b);
+                message.setMessage(b ? "那些让人过目不忘的照片，最后一张满满的即视感。" : "http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
+                message.setType(b ? MessageType.Text : MessageType.Image);
+                messages[i] = message;
+            }
+            chatDao.insertMessages(messages);
+        });
     }
 }

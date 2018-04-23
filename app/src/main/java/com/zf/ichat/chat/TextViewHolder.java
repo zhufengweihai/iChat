@@ -1,6 +1,5 @@
 package com.zf.ichat.chat;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,9 @@ import com.zf.ichat.R;
 import com.zf.ichat.data.Contact;
 import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
+import com.zf.ichat.util.ViewHolder;
 
-public class TextViewHolder extends RecyclerView.ViewHolder {
+public class TextViewHolder extends ViewHolder<Message> {
     private final ImageView avatarView;
     private final TextView messageView;
     private Contact self;
@@ -28,6 +28,7 @@ public class TextViewHolder extends RecyclerView.ViewHolder {
         this.convr = convr;
     }
 
+    @Override
     public void bindTo(Message message) {
         int pL = messageView.getPaddingLeft();
         int pT = messageView.getPaddingTop();

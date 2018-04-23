@@ -1,26 +1,21 @@
 package com.zf.ichat.util;
 
-import android.util.SparseArray;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class ViewHolder {
-    @SuppressWarnings("unchecked")
-    public static <T extends View> T get(View view, int id) {
-        SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
-        if (viewHolder == null) {
-            viewHolder = new SparseArray<View>();
-            view.setTag(viewHolder);
-        }
-        View childView = viewHolder.get(id);
-        if (childView == null) {
-            childView = view.findViewById(id);
-            viewHolder.put(id, childView);
-        }
-        return (T) childView;
-    }
-}
+import com.zf.ichat.data.Message;
 
-/*
- * 使用方法： 在getView里这样 ImageView bananaView = ViewHolder.get(convertView,
- * R.id.banana);
+/**
+ * @author zhufeng
  */
+public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
+    public ViewHolder(View itemView) {
+        super(itemView);
+    }
+
+    /**
+     * 绑定数据到视图控件
+     * @param data 数据
+     */
+    public abstract void bindTo(T data);
+}

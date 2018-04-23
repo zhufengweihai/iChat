@@ -12,8 +12,9 @@ import com.zf.ichat.R;
 import com.zf.ichat.data.Contact;
 import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
+import com.zf.ichat.util.ViewHolder;
 
-public class ImageViewHolder extends RecyclerView.ViewHolder {
+public class ImageViewHolder extends ViewHolder<Message> {
     private final ImageView avatarView;
     private final ImageView imageView;
     private Contact self;
@@ -27,6 +28,7 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
         this.convr = convr;
     }
 
+    @Override
     public void bindTo(Message message) {
         int pL = imageView.getPaddingLeft();
         int pT = imageView.getPaddingTop();
@@ -40,6 +42,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
             Glide.with(avatarView).load(self.getAvatarUrl()).into(avatarView);
             itemView.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         }
-        imageView.setPadding(pL, pT, pR, pB);
+        //imageView.setPadding(pL, pT, pR, pB);
     }
 }

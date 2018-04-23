@@ -17,28 +17,24 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.zf.ichat.R;
-import com.zf.ichat.util.ViewHolder;
+
+import java.util.ArrayList;
 
 
 /**
  * 功能描述：标题按钮上的弹窗（继承自PopupWindow）
+ *
+ * @author zhufeng
  */
 public class TitlePopup extends PopupWindow {
-    private Context mContext;
+    /**
+     * 列表弹窗的间隔
+     */
+    private final static int LIST_PADDING = 10;
 
-    // 列表弹窗的间隔
-    private final int LIST_PADDING = 10;
-
-    // 实例化一个矩形
-    private Rect mRect = new Rect();
-
-    // 坐标的位置（x、y）
-    private final int[] mLocation = new int[2];
-
-    // 屏幕的宽度和高度
+    private Context context;
+    private Rect rect = new Rect();
     private int mScreenWidth, mScreenHeight;
 
     // 判断是否需要添加或更新列表子类项
@@ -62,7 +58,7 @@ public class TitlePopup extends PopupWindow {
     }
 
     public TitlePopup(Context context, int width, int height) {
-        this.mContext = context;
+        this.context = context;
 
         // 设置可以获得焦点
         setFocusable(true);
@@ -83,7 +79,7 @@ public class TitlePopup extends PopupWindow {
         setBackgroundDrawable(new BitmapDrawable());
 
         // 设置弹窗的布局界面
-        setContentView(LayoutInflater.from(mContext).inflate(R.layout.view_title_popup, null));
+        setContentView(LayoutInflater.from(this.context).inflate(R.layout.view_title_popup, null));
         setAnimationStyle(R.style.AnimHead);
         initUI();
     }
@@ -100,7 +96,9 @@ public class TitlePopup extends PopupWindow {
                 // 点击子类项后，弹窗消失
                 dismiss();
 
-                if (mItemOnClickListener != null) mItemOnClickListener.onItemClick(mActionItems.get(index), index);
+                if (mItemOnClickListener != null) {
+                    mItemOnClickListener.onItemClick(mActionItems.get(index), index);
+                }
             }
         });
     }
@@ -109,19 +107,16 @@ public class TitlePopup extends PopupWindow {
      * 显示弹窗列表界面
      */
     public void show(View view) {
-        // 获得点击屏幕的位置坐标
-        view.getLocationOnScreen(mLocation);
-
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
         // 设置矩形的大小
-        mRect.set(mLocation[0], mLocation[1], mLocation[0] + view.getWidth(), mLocation[1] + view.getHeight());
-
+        rect.set(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
         // 判断是否需要添加或更新列表子类项
         if (mIsDirty) {
             populateActions();
         }
-
         // 显示弹窗的位置
-        showAtLocation(view, popupGravity, mScreenWidth - LIST_PADDING - (getWidth() / 2), mRect.bottom);
+        showAtLocation(view, popupGravity, mScreenWidth - LIST_PADDING - (getWidth() / 2), rect.bottom);
     }
 
     /**
@@ -135,10 +130,10 @@ public class TitlePopup extends PopupWindow {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.layout_item_pop, parent, false);
+                    convertView = LayoutInflater.from(context).inflate(R.layout.layout_item_pop, parent, false);
                 }
-                TextView textView = ViewHolder.get(convertView, R.id.txt_title);
-                textView.setTextColor(mContext.getResources().getColor(android.R.color.white));
+                TextView textView = convertView.findViewById(R.id.txt_title);
+                textView.setTextColor(context.getResources().getColor(android.R.color.white));
                 textView.setTextSize(16);
                 // 设置文本居中
                 textView.setGravity(Gravity.CENTER_VERTICAL);
@@ -201,7 +196,9 @@ public class TitlePopup extends PopupWindow {
      * 根据位置得到子类项
      */
     public ActionItem getAction(int position) {
-        if (position < 0 || position > mActionItems.size()) return null;
+        if (position < 0 || position > mActionItems.size()) {
+            return null;
+        }
         return mActionItems.get(position);
     }
 

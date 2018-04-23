@@ -7,13 +7,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup.LayoutParams;
 
 import com.zf.ichat.BaseActivity;
+import com.zf.ichat.ChatApplication;
 import com.zf.ichat.R;
 import com.zf.ichat.widget.DMTabHost;
 import com.zf.ichat.widget.TitlePopup;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
+/**
+ * @author zhufeng
+ */
 public class MainActivity extends BaseActivity {
     @BindView(R.id.tab_host)
     DMTabHost host;
@@ -25,51 +28,12 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         initPopWindow();
 
         ContactViewModel contactViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
         contactViewModel.getOwner().observe(this, owner -> {
-            // 更新 UI
+            ((ChatApplication) getApplication()).setSelf(owner);
         });
-
-       /* AsyncTask.execute(() -> {
-            ChatDao chatDao = ChatDatabase.instance(this).chatDao();
-            Contact[] contacts = new Contact[10];
-            for (int i = 0; i < 10; i++) {
-                Contact contact = new Contact();
-                contact.setId((short) i);
-                contact.setAvatarUrl("https://imgsa.baidu" + "" + "" + "" +
-                        ".com/baike/pic/item/d01373f082025aaf192b6064f3edab64034f1a07.jpg");
-                String s = "zf" + i;
-                contact.setUserName(s);
-                contact.setNickname(s);
-                contacts[i] = contact;
-            }
-            chatDao.insertContacts(contacts);
-
-            Convr[] convrs = new Convr[10];
-            for (int i = 0; i < 10; i++) {
-                Convr convr = new Convr();
-                convr.setContactId((short) i);
-                convrs[i] = convr;
-            }
-            chatDao.insertConvrs(convrs);
-
-            Message[] messages = new Message[10];
-            for (int i = 0; i < 10; i++) {
-                Message message = new Message();
-                message.setContactId((short) 0);
-                message.setCreateTime(i);
-                boolean b = i % 2 == 0;
-                message.setBelong(b);
-                message.setMessage(b ? "那些让人过目不忘的照片，最后一张满满的即视感。" : "http://img.ivsky" + "" + "" +
-                        ".com/img/tupian/slides/201803/15/fangsuo_shudian.jpg");
-                message.setType(b ? MessageType.Text : MessageType.Image);
-                messages[i] = message;
-            }
-            chatDao.insertMessages(messages);
-        });*/
     }
 
     @Override
@@ -109,8 +73,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initView() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewpager.setAdapter(adapter);

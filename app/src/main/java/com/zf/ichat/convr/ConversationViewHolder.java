@@ -36,7 +36,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
         unreadView.setText(String.valueOf(convr.getUnread()));
         itemView.setOnClickListener(v -> {
             Intent startIntent = new Intent(itemView.getContext(), ChatActivity.class);
-            startIntent.putExtra("conversation", convr);
+            startIntent.putExtra(ChatActivity.INTENT, convr);
             itemView.getContext().startActivity(startIntent);
         });
     }
