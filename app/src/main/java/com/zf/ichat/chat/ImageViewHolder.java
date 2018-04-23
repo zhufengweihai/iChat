@@ -30,7 +30,8 @@ public class ImageViewHolder extends ViewHolder<Message> {
 
     @Override
     public void bindTo(Message message) {
-        Glide.with(imageView).load(message.getMessage()).apply(RequestOptions.noTransformation()).into(imageView);
+        //Glide.with(imageView).load(message.getMessage()).apply(RequestOptions.noTransformation()).into(imageView);
+        Glide.with(imageView).load(message.getMessage()).into(imageView);
         if (message.isBelong()) {
             Glide.with(avatarView).load(convr.getAvatarUrl()).into(avatarView);
             itemView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
@@ -38,5 +39,10 @@ public class ImageViewHolder extends ViewHolder<Message> {
             Glide.with(avatarView).load(self.getAvatarUrl()).into(avatarView);
             itemView.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         }
+    }
+
+    @Override
+    public void onViewRecycled() {
+        Glide.with(imageView).clear(imageView);
     }
 }

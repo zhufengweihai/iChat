@@ -86,9 +86,7 @@ public abstract class ChatDatabase extends RoomDatabase {
                     message.setMessage("http://img1.3lian.com/2015/w23/5/d/61.jpg");
                     message.setType(MessageType.Image);
                 } else if (i % 5 == 0) {
-                    message.setMessage("https://gss0.bdstatic" +
-                            ".com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D290/sign=2554878d9958d109c0e3aebbe159ccd0" +
-                            "/a5c27d1ed21b0ef4e3d57cadd6c451da81cb3e00.jpg");
+                    message.setMessage("https://b-ssl.duitang.com/uploads/item/201605/30/20160530163343_TiAHx.thumb.700_0.gif");
                     message.setType(MessageType.Image);
                 } else {
                     message.setMessage("那些让人过目不忘的照片。");

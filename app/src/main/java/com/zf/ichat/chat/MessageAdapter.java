@@ -54,4 +54,9 @@ public class MessageAdapter extends PagedListAdapter<Message, ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.bindTo(getItem(position));
     }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        holder.onViewRecycled();
+    }
 }

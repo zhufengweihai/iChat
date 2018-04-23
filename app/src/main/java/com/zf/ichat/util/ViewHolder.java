@@ -15,7 +15,13 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
 
     /**
      * 绑定数据到视图控件
+     *
      * @param data 数据
      */
     public abstract void bindTo(T data);
+
+    public void onViewRecycled() {
+    }
+
+    ;
 }
