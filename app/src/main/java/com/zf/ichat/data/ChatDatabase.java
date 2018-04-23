@@ -55,7 +55,7 @@ public abstract class ChatDatabase extends RoomDatabase {
             for (int i = 0; i < 10; i++) {
                 Contact contact = new Contact();
                 contact.setId((short) i);
-                contact.setAvatarUrl("https://imgsa.baidu" + "" + "" + "" +
+                contact.setAvatarUrl("https://imgsa.baidu" + "" + "" + "" + "" + "" + "" + "" + "" + "" +
                         ".com/baike/pic/item/d01373f082025aaf192b6064f3edab64034f1a07.jpg");
                 String s = "zf" + i;
                 contact.setUserName(s);
@@ -72,15 +72,29 @@ public abstract class ChatDatabase extends RoomDatabase {
             }
             chatDao.insertConvrs(convrs);
 
-            Message[] messages = new Message[10];
-            for (int i = 0; i < 10; i++) {
+            Message[] messages = new Message[100];
+            for (int i = 0; i < 100; i++) {
                 Message message = new Message();
                 message.setContactId((short) 0);
                 message.setCreateTime(i);
                 boolean b = i % 2 == 0;
                 message.setBelong(b);
-                message.setMessage(b ? "那些让人过目不忘的照片，最后一张满满的即视感。" : "http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
-                message.setType(b ? MessageType.Text : MessageType.Image);
+                if (i % 2 == 0) {
+                    message.setMessage("http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
+                    message.setType(MessageType.Image);
+                } else if (i % 3 == 0) {
+                    message.setMessage("http://img1.3lian.com/2015/w23/5/d/61.jpg");
+                    message.setType(MessageType.Image);
+                } else if (i % 5 == 0) {
+                    message.setMessage("https://gss0.bdstatic" +
+                            ".com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D290/sign=2554878d9958d109c0e3aebbe159ccd0" +
+                            "/a5c27d1ed21b0ef4e3d57cadd6c451da81cb3e00.jpg");
+                    message.setType(MessageType.Image);
+                } else {
+                    message.setMessage("那些让人过目不忘的照片。");
+                    message.setType(MessageType.Text);
+                }
+
                 messages[i] = message;
             }
             chatDao.insertMessages(messages);
