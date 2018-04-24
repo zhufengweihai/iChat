@@ -23,6 +23,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
 @Database(entities = {Contact.class, Convr.class, Message.class}, version = 1, exportSchema = false)
@@ -55,7 +56,7 @@ public abstract class ChatDatabase extends RoomDatabase {
             for (int i = 0; i < 10; i++) {
                 Contact contact = new Contact();
                 contact.setId((short) i);
-                contact.setAvatarUrl("https://imgsa.baidu" + "" + "" + "" + "" + "" + "" + "" + "" + "" +
+                contact.setAvatarUrl("https://imgsa.baidu" + "" +
                         ".com/baike/pic/item/d01373f082025aaf192b6064f3edab64034f1a07.jpg");
                 String s = "zf" + i;
                 contact.setUserName(s);
@@ -76,21 +77,26 @@ public abstract class ChatDatabase extends RoomDatabase {
             for (int i = 0; i < 100; i++) {
                 Message message = new Message();
                 message.setContactId((short) 0);
-                message.setCreateTime(i);
-                boolean b = i % 2 == 0;
-                message.setBelong(b);
+                message.setCreateTime(SystemClock.currentThreadTimeMillis() - i * 60 * 1000);
                 if (i % 2 == 0) {
                     message.setMessage("http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
                     message.setType(MessageType.Image);
+                    message.setBelong(true);
                 } else if (i % 3 == 0) {
                     message.setMessage("http://img1.3lian.com/2015/w23/5/d/61.jpg");
                     message.setType(MessageType.Image);
+                    message.setBelong(false);
                 } else if (i % 5 == 0) {
-                    message.setMessage("https://b-ssl.duitang.com/uploads/item/201605/30/20160530163343_TiAHx.thumb.700_0.gif");
+                    message.setMessage("https://b-ssl.duitang.com/uploads/item/201605/30/20160530163343_TiAHx" + "" +
+                            ".thumb.700_0.gif");
                     message.setType(MessageType.Image);
+                    message.setBelong(true);
                 } else {
-                    message.setMessage("那些让人过目不忘的照片。");
+                    boolean belong = i % 7 == 0;
+                    message.setMessage(belong ? "那些让人过目不忘的照片。" : "本书是曼联功勋教练弗格森和红杉资本主席莫里茨联手之作," +
+                            "全面解析弗格森38年的领导心得——如何打造并管理一支永葆战斗力的队伍...");
                     message.setType(MessageType.Text);
+                    message.setBelong(belong);
                 }
 
                 messages[i] = message;

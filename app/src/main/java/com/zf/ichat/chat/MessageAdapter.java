@@ -3,15 +3,13 @@ package com.zf.ichat.chat;
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
 import com.zf.ichat.data.MessageType;
-import com.zf.ichat.util.ViewHolder;
 
-public class MessageAdapter extends PagedListAdapter<Message, ViewHolder> {
+public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder> {
     private Conversation conversation;
 
     public MessageAdapter(Conversation conversation) {
@@ -41,7 +39,7 @@ public class MessageAdapter extends PagedListAdapter<Message, ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (MessageType.values()[viewType]) {
             case Image:
                 return new ImageViewHolder(parent, conversation);
@@ -51,12 +49,17 @@ public class MessageAdapter extends PagedListAdapter<Message, ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bindTo(getItem(position));
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+        boolean showTime = false;
+        Message message = getItem(position);
+        if (position > 0) {
+            showTime = message.getCreateTime() - getItem(position + 1).getCreateTime() >= 60 * 1000;
+        }
+        holder.bindTo(message, showTime);
     }
 
     @Override
-    public void onViewRecycled(@NonNull ViewHolder holder) {
+    public void onViewRecycled(@NonNull MessageViewHolder holder) {
         holder.onViewRecycled();
     }
 }

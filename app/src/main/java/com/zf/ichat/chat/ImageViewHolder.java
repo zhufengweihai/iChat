@@ -6,22 +6,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.zf.ichat.ChatApplication;
 import com.zf.ichat.R;
 import com.zf.ichat.data.Contact;
 import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
-import com.zf.ichat.util.ViewHolder;
 
-public class ImageViewHolder extends ViewHolder<Message> {
+public class ImageViewHolder extends MessageViewHolder {
     private final ImageView avatarView;
     private final ImageView imageView;
     private Contact self;
     private Conversation convr;
 
     public ImageViewHolder(ViewGroup parent, Conversation convr) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_image, parent, false));
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_image, parent, false), convr);
         avatarView = itemView.findViewById(R.id.avatarView);
         imageView = itemView.findViewById(R.id.imageView);
         self = ((ChatApplication) parent.getContext().getApplicationContext()).getSelf();
@@ -30,15 +28,16 @@ public class ImageViewHolder extends ViewHolder<Message> {
 
     @Override
     public void bindTo(Message message) {
-        //Glide.with(imageView).load(message.getMessage()).apply(RequestOptions.noTransformation()).into(imageView);
-        Glide.with(imageView).load(message.getMessage()).into(imageView);
         if (message.isBelong()) {
-            Glide.with(avatarView).load(convr.getAvatarUrl()).into(avatarView);
-            itemView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-        } else {
             Glide.with(avatarView).load(self.getAvatarUrl()).into(avatarView);
+            imageView.setScaleType(ImageView.ScaleType.FIT_END);
             itemView.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        } else {
+            Glide.with(avatarView).load(convr.getAvatarUrl()).into(avatarView);
+            imageView.setScaleType(ImageView.ScaleType.FIT_START);
+            itemView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
+        Glide.with(imageView).load(message.getMessage()).into(imageView);
     }
 
     @Override

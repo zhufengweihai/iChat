@@ -3,8 +3,6 @@ package com.zf.ichat.util;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.zf.ichat.data.Message;
-
 /**
  * @author zhufeng
  */
@@ -22,6 +20,4 @@ public abstract class ViewHolder<T> extends RecyclerView.ViewHolder {
 
     public void onViewRecycled() {
     }
-
-    ;
 }

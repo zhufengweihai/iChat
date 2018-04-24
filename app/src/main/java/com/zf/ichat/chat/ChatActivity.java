@@ -36,6 +36,7 @@ public class ChatActivity extends BaseActivity {
         ChatViewModel viewModel = ViewModelProviders.of(this).get(ChatViewModel.class);
 
         Conversation convr = (Conversation) getIntent().getSerializableExtra(INTENT);
+        getSupportActionBar().setTitle(convr.getNickname());
         MessageAdapter adapter = new MessageAdapter(convr);
         chatView.setAdapter(adapter);
         viewModel.getMessages(convr.getContactId()).observe(this, adapter::submitList);
