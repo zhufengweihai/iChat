@@ -12,8 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:background="@color/gray"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_gray_corner"
+        android:paddingStart="5dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="2dp"
         android:textColor="@color/white"
+        android:textSize="12sp"
         android:visibility="gone"/>
 
     <ImageView
@@ -35,7 +41,10 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="left"
+        android:lineSpacingMultiplier="1.2"
         android:padding="10dp"
-        android:paddingStart="15dp"
-        android:singleLine="false"/>
+        android:paddingStart="16dp"
+        android:singleLine="false"
+        android:textColor="@color/black"
+        android:textSize="15sp"/>
 </RelativeLayout>

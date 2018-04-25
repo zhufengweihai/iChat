@@ -11,17 +11,22 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:background="@color/gray"
-        android:padding="2dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_gray_corner"
+        android:paddingStart="5dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="5dp"
+        android:paddingBottom="2dp"
         android:textColor="@color/white"
+        android:textSize="12sp"
         android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/avatarView"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentStart="true"
         android:layout_below="@id/timeView"
+        android:layout_alignParentStart="true"
         android:scaleType="fitXY"/>
 
     <com.zf.ichat.widget.EffectImageView

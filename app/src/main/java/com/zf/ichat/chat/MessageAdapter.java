@@ -50,12 +50,7 @@ public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
-        boolean showTime = false;
-        Message message = getItem(position);
-        if (position > 0) {
-            showTime = message.getCreateTime() - getItem(position + 1).getCreateTime() >= 60 * 1000;
-        }
-        holder.bindTo(message, showTime);
+        holder.bindTo(getItem(position));
     }
 
     @Override

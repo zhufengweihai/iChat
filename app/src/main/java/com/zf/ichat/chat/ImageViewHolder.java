@@ -28,6 +28,7 @@ public class ImageViewHolder extends MessageViewHolder {
 
     @Override
     public void bindTo(Message message) {
+        super.bindTo(message);
         if (message.isBelong()) {
             Glide.with(avatarView).load(self.getAvatarUrl()).into(avatarView);
             imageView.setScaleType(ImageView.ScaleType.FIT_END);

@@ -20,6 +20,7 @@ public class TextViewHolder extends MessageViewHolder {
 
     @Override
     public void bindTo(Message message) {
+        super.bindTo(message);
         int pL = messageView.getPaddingLeft();
         int pT = messageView.getPaddingTop();
         int pR = messageView.getPaddingRight();

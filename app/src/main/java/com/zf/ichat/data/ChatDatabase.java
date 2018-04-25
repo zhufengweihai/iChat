@@ -23,7 +23,6 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
 @Database(entities = {Contact.class, Convr.class, Message.class}, version = 1, exportSchema = false)
@@ -74,10 +73,11 @@ public abstract class ChatDatabase extends RoomDatabase {
             chatDao.insertConvrs(convrs);
 
             Message[] messages = new Message[100];
+            long now = System.currentTimeMillis();
             for (int i = 0; i < 100; i++) {
                 Message message = new Message();
                 message.setContactId((short) 0);
-                message.setCreateTime(SystemClock.currentThreadTimeMillis() - i * 60 * 1000);
+                message.setCreateTime((now -= (i % 2 == 0 ? i * 60 * 1000 : i * 60 * 1000 * 60 * 3)));
                 if (i % 2 == 0) {
                     message.setMessage("http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
                     message.setType(MessageType.Image);
