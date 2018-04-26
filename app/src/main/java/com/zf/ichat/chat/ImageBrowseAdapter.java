@@ -5,16 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.view.ViewGroup;
 
-import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
-import com.zf.ichat.data.MessageType;
 
-public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder> {
-    private Conversation conversation;
+public class ImageBrowseAdapter extends PagedListAdapter<Message, ImageBrowseViewHolder> {
+    private int currentPos;
 
-    public MessageAdapter(Conversation conversation) {
+    public ImageBrowseAdapter(int currentPos) {
         super(getDiffCallback());
-        this.conversation = conversation;
+        this.currentPos = currentPos;
     }
 
     @NonNull
@@ -32,29 +30,19 @@ public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder>
         };
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getType().ordinal();
-    }
-
     @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (MessageType.values()[viewType]) {
-            case Image:
-                return new ImageViewHolder(parent, conversation);
-            default:
-                return new TextViewHolder(parent, conversation);
-        }
+    public ImageBrowseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ImageBrowseViewHolder(parent);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageBrowseViewHolder holder, int position) {
         holder.bindTo(getItem(position));
     }
 
     @Override
-    public void onViewRecycled(@NonNull MessageViewHolder holder) {
+    public void onViewRecycled(@NonNull ImageBrowseViewHolder holder) {
         holder.onViewRecycled();
     }
 }

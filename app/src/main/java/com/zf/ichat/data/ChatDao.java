@@ -48,4 +48,7 @@ public interface ChatDao {
 
     @Query("SELECT * FROM Message WHERE contactId = :contactId ORDER BY createTime DESC")
     DataSource.Factory<Integer, Message> getMessages(short contactId);
+
+    @Query("SELECT * FROM Message WHERE type=:type and contactId = :contactId ORDER BY createTime DESC")
+    DataSource.Factory<Integer, Message> getMessagesByType(MessageType type, short contactId);
 }

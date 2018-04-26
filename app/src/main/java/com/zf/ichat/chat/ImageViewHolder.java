@@ -1,5 +1,6 @@
 package com.zf.ichat.chat;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class ImageViewHolder extends MessageViewHolder {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_image, parent, false), convr);
         avatarView = itemView.findViewById(R.id.avatarView);
         imageView = itemView.findViewById(R.id.imageView);
+
         self = ((ChatApplication) parent.getContext().getApplicationContext()).getSelf();
         this.convr = convr;
     }
@@ -39,6 +41,11 @@ public class ImageViewHolder extends MessageViewHolder {
             itemView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
         Glide.with(imageView).load(message.getMessage()).into(imageView);
+        imageView.setOnClickListener(v -> {
+            Intent startIntent = new Intent(itemView.getContext(), ImageBrowseActivity.class);
+            startIntent.putExtra(ImageBrowseActivity.INTENT, convr.getContactId());
+            itemView.getContext().startActivity(startIntent);
+        });
     }
 
     @Override
