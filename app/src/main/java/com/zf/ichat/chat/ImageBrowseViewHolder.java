@@ -4,11 +4,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.zf.ichat.R;
 import com.zf.ichat.data.Message;
 import com.zf.ichat.util.ViewHolder;
-
-import uk.co.senab.photoview.PhotoView;
 
 public class ImageBrowseViewHolder extends ViewHolder<Message> {
     private final PhotoView photoView;

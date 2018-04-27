@@ -1,1 +1,1 @@
-include ':app', 'ninegridview'
+include ':app', 'ninegridview', 'photoview'

@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.lzy.ninegrid.ImageInfo;
 import com.lzy.ninegrid.NineGridView;
 import com.lzy.ninegrid.R;
 
 import java.util.List;
 
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * ================================================
@@ -28,7 +28,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * 修订历史：
  * ================================================
  */
-public class ImagePreviewAdapter extends PagerAdapter implements PhotoViewAttacher.OnPhotoTapListener {
+public class ImagePreviewAdapter extends PagerAdapter implements OnPhotoTapListener {
     private List<ImageInfo> imageInfo;
     private Context context;
     private View currentView;
@@ -100,16 +100,8 @@ public class ImagePreviewAdapter extends PagerAdapter implements PhotoViewAttach
         container.removeView((View) object);
     }
 
-    /**
-     * 单击屏幕关闭
-     */
     @Override
-    public void onPhotoTap(View view, float x, float y) {
+    public void onPhotoTap(ImageView view, float x, float y) {
         ((ImagePreviewActivity) context).finishActivityAnim();
-    }
-
-    @Override
-    public void onOutsidePhotoTap() {
-
     }
 }
