@@ -1,6 +1,8 @@
 package com.zf.ichat.chat;
 
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +46,9 @@ public class ImageViewHolder extends MessageViewHolder {
         imageView.setOnClickListener(v -> {
             Intent startIntent = new Intent(itemView.getContext(), ImageBrowseActivity.class);
             startIntent.putExtra(ImageBrowseActivity.INTENT, convr.getContactId());
-            itemView.getContext().startActivity(startIntent);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeScaleUpAnimation(imageView, imageView.getWidth()
+                    / 2, imageView.getHeight() / 2, imageView.getWidth(), imageView.getHeight());
+            ActivityCompat.startActivity(itemView.getContext(), startIntent, compat.toBundle());
         });
     }
 

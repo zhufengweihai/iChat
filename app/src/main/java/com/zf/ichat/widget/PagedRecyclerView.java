@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 public class PagedRecyclerView extends RecyclerView {
     private boolean scrollToNext = false;
@@ -21,18 +22,32 @@ public class PagedRecyclerView extends RecyclerView {
     }
 
     @Override
-    public void onScrollStateChanged(int state) {
-        if (state == SCROLL_STATE_IDLE) {
-            if (scrollToNext) {
-                int position = ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition() + dPos;
-                if (position >= 0 && position < getAdapter().getItemCount()) {
-                    smoothScrollToPosition(position);
-                }
-                scrollToNext = false;
-                dPos = 0;
-            }
-        } else {
+    public boolean onInterceptTouchEvent(MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            updatePage(true);
+        }
+        return super.onInterceptTouchEvent(e);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            updatePage(false);
+        }
+        return super.onTouchEvent(e);
+    }
+
+
+    private void updatePage(boolean pressed) {
+        if (pressed) {
             scrollToNext = true;
+        } else if (scrollToNext) {
+            int position = ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition() + dPos;
+            if (position >= 0 && position < getAdapter().getItemCount()) {
+                smoothScrollToPosition(position);
+            }
+            scrollToNext = false;
+            dPos = 0;
         }
     }
 

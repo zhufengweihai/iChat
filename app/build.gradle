@@ -32,13 +32,14 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation "android.arch.persistence.room:runtime:1.1.0-beta3"
-    implementation "android.arch.paging:runtime:1.0.0-beta1"
+    implementation "android.arch.paging:runtime:1.0.0-rc1"
     implementation "com.google.code.gson:gson:2.8.2"
     implementation "jp.wasabeef:glide-transformations:3.3.0"
     implementation "android.arch.lifecycle:runtime:1.1.1"
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation "net.coobird:thumbnailator:0.4.8"
     implementation 'joda-time:joda-time:2.9.9'
+    implementation 'com.github.florent37:viewanimator:1.0.5'
 
     compileOnly 'org.projectlombok:lombok:1.16.20'
 

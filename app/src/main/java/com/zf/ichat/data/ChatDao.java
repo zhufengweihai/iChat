@@ -1,5 +1,6 @@
 package com.zf.ichat.data;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -50,5 +51,5 @@ public interface ChatDao {
     DataSource.Factory<Integer, Message> getMessages(short contactId);
 
     @Query("SELECT * FROM Message WHERE type=:type and contactId = :contactId ORDER BY createTime DESC")
-    DataSource.Factory<Integer, Message> getMessagesByType(MessageType type, short contactId);
+    LiveData<List<Message>> getMessagesByType(MessageType type, short contactId);
 }
