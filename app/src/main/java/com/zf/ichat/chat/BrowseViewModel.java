@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import com.zf.ichat.data.ChatDao;
 import com.zf.ichat.data.ChatDatabase;
 import com.zf.ichat.data.Message;
-import com.zf.ichat.data.MessageType;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class BrowseViewModel extends AndroidViewModel {
 
     public LiveData<List<Message>> getImageMessages(short contactId) {
         if (messages == null) {
-            messages = chatDao.getMessagesByType(MessageType.Image, contactId);
+            messages = chatDao.getMessagesByType(Message.IMAGE, contactId);
         }
         return messages;
     }

@@ -4,20 +4,31 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = @ForeignKey(entity = Contact.class, parentColumns = "id", childColumns = "contactId", onDelete
         = CASCADE), indices = {@Index("id"), @Index("contactId"), @Index("createTime")})
 public class Message {
+    public static final int TEXT = 0;
+    public static final int IMAGE = 1;
+    public static final int VOICE = 2;
+    public static final int VIDEO = 3;
+    public static final int LINK = 4;
+    public static final int EMOJI = 5;
+
     @PrimaryKey(autoGenerate = true)
     @NonNull
     private int id;
     @NonNull
     private short contactId;
     private String message;
-    private MessageType type;
+    private int type;
     private long createTime;
     private boolean belong;
 
@@ -47,11 +58,12 @@ public class Message {
         this.message = message;
     }
 
-    public MessageType getType() {
+    @Type
+    public int getType() {
         return type;
     }
 
-    public void setType(MessageType type) {
+    public void setType(@Type int type) {
         this.type = type;
     }
 
@@ -69,5 +81,10 @@ public class Message {
 
     public void setBelong(boolean belong) {
         this.belong = belong;
+    }
+
+    @IntDef({TEXT, IMAGE, VOICE, VIDEO, LINK, EMOJI})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
     }
 }

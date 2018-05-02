@@ -20,7 +20,7 @@ public class ConversationViewHolder extends RecyclerView.ViewHolder {
     private final TextView timeView;
 
     public ConversationViewHolder(ViewGroup parent) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_convr_item, parent, false));
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_convr, parent, false));
         avatarView = itemView.findViewById(R.id.avatarView);
         unreadView = itemView.findViewById(R.id.unreadView);
         nameView = itemView.findViewById(R.id.nameView);

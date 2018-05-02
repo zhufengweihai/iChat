@@ -13,4 +13,5 @@
     <color name="gray">#9A9A9A</color>
     <color name="gray_pressed">#c0c0c0</color>
     <color name="red">#FC2828</color>
+    <color name="transparent">@android:color/transparent</color>
 </resources>

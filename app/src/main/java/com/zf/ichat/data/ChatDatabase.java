@@ -20,13 +20,11 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 @Database(entities = {Contact.class, Convr.class, Message.class}, version = 1, exportSchema = false)
-@TypeConverters({Converters.class})
 public abstract class ChatDatabase extends RoomDatabase {
     private static ChatDatabase INSTANCE;
     private static final Object sLock = new Object();
@@ -51,12 +49,15 @@ public abstract class ChatDatabase extends RoomDatabase {
     private static void initData(Context context) {
         AsyncTask.execute(() -> {
             ChatDao chatDao = ChatDatabase.instance(context).chatDao();
-            Contact[] contacts = new Contact[10];
-            for (int i = 0; i < 10; i++) {
+            Contact[] contacts = new Contact[100];
+            for (int i = 0; i < 100; i++) {
                 Contact contact = new Contact();
                 contact.setId((short) i);
-                contact.setAvatarUrl("https://imgsa.baidu" + "" +
-                        ".com/baike/pic/item/d01373f082025aaf192b6064f3edab64034f1a07.jpg");
+                if (i % 2 == 0) {
+                    contact.setAvatarUrl("http://t1.27270.com/uploads/tu/201712/266/eb3d6d0b81.jpg");
+                } else {
+                    contact.setAvatarUrl("http://t1.27270.com/uploads/tu/201712/181/4471a4d986.jpg");
+                }
                 String s = "zf" + i;
                 contact.setUserName(s);
                 contact.setNickname(s);
@@ -64,8 +65,8 @@ public abstract class ChatDatabase extends RoomDatabase {
             }
             chatDao.insertContacts(contacts);
 
-            Convr[] convrs = new Convr[10];
-            for (int i = 0; i < 10; i++) {
+            Convr[] convrs = new Convr[100];
+            for (int i = 0; i < 100; i++) {
                 Convr convr = new Convr();
                 convr.setContactId((short) i);
                 convrs[i] = convr;
@@ -80,22 +81,22 @@ public abstract class ChatDatabase extends RoomDatabase {
                 message.setCreateTime((now -= (i % 2 == 0 ? i * 60 * 1000 : i * 60 * 1000 * 60 * 3)));
                 if (i % 2 == 0) {
                     message.setMessage("http://www.taopic.com/uploads/allimg/131125/240503-1311250IT642.jpg");
-                    message.setType(MessageType.Image);
+                    message.setType(Message.IMAGE);
                     message.setBelong(true);
                 } else if (i % 3 == 0) {
                     message.setMessage("http://img1.3lian.com/2015/w23/5/d/61.jpg");
-                    message.setType(MessageType.Image);
+                    message.setType(Message.IMAGE);
                     message.setBelong(false);
                 } else if (i % 5 == 0) {
                     message.setMessage("https://b-ssl.duitang.com/uploads/item/201605/30/20160530163343_TiAHx" + "" +
                             ".thumb.700_0.gif");
-                    message.setType(MessageType.Image);
+                    message.setType(Message.IMAGE);
                     message.setBelong(true);
                 } else {
                     boolean belong = i % 7 == 0;
                     message.setMessage(belong ? "那些让人过目不忘的照片。" : "本书是曼联功勋教练弗格森和红杉资本主席莫里茨联手之作," +
                             "全面解析弗格森38年的领导心得——如何打造并管理一支永葆战斗力的队伍...");
-                    message.setType(MessageType.Text);
+                    message.setType(Message.TEXT);
                     message.setBelong(belong);
                 }
 

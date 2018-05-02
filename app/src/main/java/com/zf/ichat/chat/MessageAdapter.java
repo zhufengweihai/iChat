@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.zf.ichat.data.Conversation;
 import com.zf.ichat.data.Message;
-import com.zf.ichat.data.MessageType;
 
 public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder> {
     private Conversation conversation;
@@ -34,14 +33,14 @@ public class MessageAdapter extends PagedListAdapter<Message, MessageViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getType().ordinal();
+        return getItem(position).getType();
     }
 
     @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (MessageType.values()[viewType]) {
-            case Image:
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent,@Message.Type int viewType) {
+        switch (viewType) {
+            case Message.IMAGE:
                 return new ImageViewHolder(parent, conversation);
             default:
                 return new TextViewHolder(parent, conversation);
