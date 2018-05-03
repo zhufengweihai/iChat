@@ -9,7 +9,7 @@ import android.view.ViewGroup.LayoutParams;
 import com.zf.ichat.BaseActivity;
 import com.zf.ichat.ChatApplication;
 import com.zf.ichat.R;
-import com.zf.ichat.widget.DMTabHost;
+import com.zf.ichat.widget.PagerTabGroup;
 import com.zf.ichat.widget.TitlePopup;
 
 import butterknife.BindView;
@@ -18,8 +18,8 @@ import butterknife.BindView;
  * @author zhufeng
  */
 public class MainActivity extends BaseActivity {
-    @BindView(R.id.tab_host)
-    DMTabHost host;
+    @BindView(R.id.tabGroup)
+    PagerTabGroup tabGroup;
     @BindView(R.id.viewpager)
     ViewPager viewpager;
     private TitlePopup titlePopup;
@@ -78,7 +78,8 @@ public class MainActivity extends BaseActivity {
 
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
         viewpager.setAdapter(adapter);
-        host.setChecked(0);
-        host.setHasNew(2, true);
+        tabGroup.setChecked(0);
+        tabGroup.setHasNew(2, true);
+        tabGroup.setViewPager(viewpager);
     }
 }

@@ -24,6 +24,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.github.promeg.pinyinhelper.Pinyin;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Random;
+
 @Database(entities = {Contact.class, Convr.class, Message.class}, version = 1, exportSchema = false)
 public abstract class ChatDatabase extends RoomDatabase {
     private static ChatDatabase INSTANCE;
@@ -58,9 +63,10 @@ public abstract class ChatDatabase extends RoomDatabase {
                 } else {
                     contact.setAvatarUrl("http://t1.27270.com/uploads/tu/201712/181/4471a4d986.jpg");
                 }
-                String s = "zf" + i;
-                contact.setUserName(s);
-                contact.setNickname(s);
+                String name = getRandomChar();
+                contact.setUserName(name);
+                contact.setNickname(name);
+                contact.setPinyin(Pinyin.toPinyin(name, ""));
                 contacts[i] = contact;
             }
             chatDao.insertContacts(contacts);
@@ -104,5 +110,27 @@ public abstract class ChatDatabase extends RoomDatabase {
             }
             chatDao.insertMessages(messages);
         });
+    }
+
+    public static String getRandomChar() {
+        String str = "";
+        int highCode;
+        int lowCode;
+
+        Random random = new Random();
+
+        highCode = (176 + Math.abs(random.nextInt(39))); //B0 + 0~39(16~55) 一级汉字所占区
+        lowCode = (161 + Math.abs(random.nextInt(93))); //A1 + 0~93 每区有94个汉字
+
+        byte[] b = new byte[2];
+        b[0] = (Integer.valueOf(highCode)).byteValue();
+        b[1] = (Integer.valueOf(lowCode)).byteValue();
+
+        try {
+            str = new String(b, "GBK");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 }

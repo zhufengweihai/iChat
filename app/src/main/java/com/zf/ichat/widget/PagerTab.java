@@ -13,21 +13,21 @@ import android.widget.TextView;
 
 import com.zf.ichat.R;
 
-public class DMTabButton extends RelativeLayout {
+public class PagerTab extends RelativeLayout {
     private View tab_tip;
     private TextView unread_count;
     private boolean isChecked = false;
 
-    public DMTabButton(Context context, AttributeSet attrs, int defStyle) {
+    public PagerTab(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initLayout(context, attrs);
     }
 
-    public DMTabButton(Context context) {
+    public PagerTab(Context context) {
         super(context);
     }
 
-    public DMTabButton(Context context, AttributeSet attrs) {
+    public PagerTab(Context context, AttributeSet attrs) {
         super(context, attrs);
         initLayout(context, attrs);
     }

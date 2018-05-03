@@ -7,6 +7,13 @@ import android.support.annotation.NonNull;
 
 @Entity(indices = {@Index("id")})
 public class Contact {
+    public static final int NEW_FRIEND = -4;
+    public static final int GROUP_CHAT = -3;
+    public static final int LABEL = -2;
+    public static final int PUBLIC = -1;
+    public static final int ME = 0;
+    public static final int FRIEND = 1;
+
     @PrimaryKey
     @NonNull
     private short id;
@@ -14,6 +21,7 @@ public class Contact {
     private String userName;
     private String nickname;
     private String avatarUrl;
+    private String pinyin;
     private int sex = 2;
 
     @NonNull
@@ -50,6 +58,14 @@ public class Contact {
         this.avatarUrl = avatarUrl;
     }
 
+    public String getPinyin() {
+        return pinyin;
+    }
+
+    public void setPinyin(String pinyin) {
+        this.pinyin = pinyin;
+    }
+
     public int getSex() {
         return sex;
     }
@@ -57,4 +73,6 @@ public class Contact {
     public void setSex(int sex) {
         this.sex = sex;
     }
+
+
 }

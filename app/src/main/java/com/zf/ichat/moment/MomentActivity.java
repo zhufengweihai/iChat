@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.zf.ichat.R;
-import com.zf.ichat.widget.RecycleViewDivider;
+import com.zf.ichat.widget.DividerItemDecoration;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -54,7 +54,7 @@ public class MomentActivity extends AppCompatActivity {
             nameView.getPaint().setFakeBoldText(true);
             nameView.setText(self.getName());
 
-            momentListView.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
+            momentListView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
             momentListView.setLayoutManager(new LinearLayoutManager(this));
             momentListView.setAdapter(new MomentListAdapter(self.getMoments()));
         } catch (FileNotFoundException e) {

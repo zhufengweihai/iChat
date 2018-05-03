@@ -8,8 +8,8 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.support.v4.view.ViewPager;
 
-public class DMTabHost extends LinearLayout implements OnClickListener {
-    public DMTabHost(Context context, AttributeSet attrs) {
+public class PagerTabGroup extends LinearLayout implements OnClickListener {
+    public PagerTabGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -19,7 +19,7 @@ public class DMTabHost extends LinearLayout implements OnClickListener {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View view = getChildAt(i);
-            if (view instanceof DMTabButton || view instanceof DMTabTextView) {
+            if (view instanceof PagerTab || view instanceof DMTabTextView) {
                 view.setOnClickListener(this);
             }
         }
@@ -33,7 +33,7 @@ public class DMTabHost extends LinearLayout implements OnClickListener {
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View view = getChildAt(i);
-            if (view instanceof DMTabButton || view instanceof DMTabTextView) {
+            if (view instanceof PagerTab || view instanceof DMTabTextView) {
                 view.setSelected(position == i);
             }
         }
@@ -55,7 +55,7 @@ public class DMTabHost extends LinearLayout implements OnClickListener {
      * @param hasNew
      */
     public void setHasNew(int position, boolean hasNew) {
-        DMTabButton button = (DMTabButton) getChildAt(position);
+        PagerTab button = (PagerTab) getChildAt(position);
         if (button != null) {
             button.setHasNew(hasNew);
         }
@@ -68,7 +68,7 @@ public class DMTabHost extends LinearLayout implements OnClickListener {
      * @param count
      */
     public void setUnreadCount(int position, int count) {
-        DMTabButton button = (DMTabButton) getChildAt(position);
+        PagerTab button = (PagerTab) getChildAt(position);
         if (button != null) {
             button.setUnreadCount(count);
         }

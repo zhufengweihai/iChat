@@ -2,6 +2,7 @@ package com.zf.ichat.contact;
 
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.view.ViewGroup;
 
@@ -25,6 +26,12 @@ public class ContactAdapter extends PagedListAdapter<Contact, ContactViewHolder>
                 return oldItem == newItem;
             }
         };
+    }
+
+    @Nullable
+    @Override
+    protected Contact getItem(int position) {
+        return super.getItem(position);
     }
 
     @NonNull

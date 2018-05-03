@@ -55,4 +55,10 @@ public interface ChatDao {
 
     @Query("SELECT * FROM Contact")
     DataSource.Factory<Integer, Contact> getAllContacts();
+
+    @Query("SELECT * FROM Contact ORDER BY pinyin DESC LIMIT :count OFFSET :offset")
+    List<Contact> getContacts(int count, int offset);
+
+    @Query("SELECT count(*) FROM Contact")
+    int getContactCount();
 }

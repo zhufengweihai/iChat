@@ -40,13 +40,13 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="#D6DCDC"
-            app:layout_constraintBottom_toTopOf="@id/tab_host"
+            app:layout_constraintBottom_toTopOf="@id/tabGroup"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewpager"/>
 
-        <com.zf.ichat.widget.DMTabHost
-            android:id="@+id/tab_host"
+        <com.zf.ichat.widget.PagerTabGroup
+            android:id="@+id/tabGroup"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/white"
@@ -57,37 +57,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider">
 
-            <com.zf.ichat.widget.DMTabButton
+            <com.zf.ichat.widget.PagerTab
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:drawableTop="@drawable/tab_weixin"
                 app:tabtext="@string/app_name">
-            </com.zf.ichat.widget.DMTabButton>
+            </com.zf.ichat.widget.PagerTab>
 
-            <com.zf.ichat.widget.DMTabButton
+            <com.zf.ichat.widget.PagerTab
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:drawableTop="@drawable/tab_contact_list"
                 app:tabtext="@string/contacts">
-            </com.zf.ichat.widget.DMTabButton>
+            </com.zf.ichat.widget.PagerTab>
 
-            <com.zf.ichat.widget.DMTabButton
+            <com.zf.ichat.widget.PagerTab
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:drawableTop="@drawable/tab_find"
                 app:tabtext="@string/discover">
-            </com.zf.ichat.widget.DMTabButton>
+            </com.zf.ichat.widget.PagerTab>
 
-            <com.zf.ichat.widget.DMTabButton
+            <com.zf.ichat.widget.PagerTab
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 app:drawableTop="@drawable/tab_profile"
                 app:tabtext="@string/me">
-            </com.zf.ichat.widget.DMTabButton>
-        </com.zf.ichat.widget.DMTabHost>
+            </com.zf.ichat.widget.PagerTab>
+        </com.zf.ichat.widget.PagerTabGroup>
     </android.support.constraint.ConstraintLayout>
 </android.support.design.widget.CoordinatorLayout>

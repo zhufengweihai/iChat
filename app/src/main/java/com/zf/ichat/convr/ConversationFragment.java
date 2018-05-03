@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zf.ichat.widget.RecycleViewDivider;
+import com.zf.ichat.widget.DividerItemDecoration;
 
 /**
  * @author zhufeng
@@ -22,7 +22,7 @@ public class ConversationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = inflater.getContext();
         RecyclerView conversationView = new RecyclerView(context);
-        conversationView.addItemDecoration(new RecycleViewDivider(context, LinearLayoutManager.HORIZONTAL));
+        conversationView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL));
         conversationView.setLayoutManager(new LinearLayoutManager(context));
 
         ConversationAdapter adapter = new ConversationAdapter();
