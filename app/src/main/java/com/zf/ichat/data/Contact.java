@@ -21,6 +21,7 @@ public class Contact {
     private String userName;
     private String nickname;
     private String avatarUrl;
+    @NonNull
     private String pinyin;
     private int sex = 2;
 
@@ -58,11 +59,12 @@ public class Contact {
         this.avatarUrl = avatarUrl;
     }
 
+    @NonNull
     public String getPinyin() {
         return pinyin;
     }
 
-    public void setPinyin(String pinyin) {
+    public void setPinyin(@NonNull String pinyin) {
         this.pinyin = pinyin;
     }
 

@@ -10,17 +10,9 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
-
-/**
- * 介绍：索引右侧边栏
- * 作者：zhangxutong
- * 邮箱：mcxtzhang@163.com
- * CSDN：http://blog.csdn.net/zxt0601
- * 时间： 16/09/04.
- */
 public class IndexBar extends View {
     //#在最后面（默认的数据源）
-    private final static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    public final static String[] INDEX_STRING = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
             "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "#"};
 
     //View的宽高
@@ -31,7 +23,7 @@ public class IndexBar extends View {
     private Paint paint;
     //手指按下时的背景色
     private int mPressedBackground;
-    private onIndexPressedListener mOnIndexPressedListener;
+    private onIndexPressedListener onIndexPressedListener;
 
     public IndexBar(Context context) {
         this(context, null);
@@ -46,14 +38,14 @@ public class IndexBar extends View {
         init(context, attrs, defStyleAttr);
     }
 
-    public void setmOnIndexPressedListener(onIndexPressedListener mOnIndexPressedListener) {
-        this.mOnIndexPressedListener = mOnIndexPressedListener;
+    public void setOnIndexPressedListener(onIndexPressedListener onIndexPressedListener) {
+        this.onIndexPressedListener = onIndexPressedListener;
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources()
+        int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources()
                 .getDisplayMetrics());//默认的TextSize
-        mPressedBackground = Color.BLACK;//默认按下是纯黑色
+        mPressedBackground = Color.GRAY;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -71,9 +63,7 @@ public class IndexBar extends View {
         int measureWidth = 0, measureHeight = 0;//最终测量出来的宽高
 
         //得到合适宽度：
-        String index;//每个要绘制的index内容
-        for (int i = 0; i < INDEX_STRING.length; i++) {
-            index = INDEX_STRING[i];
+        for (String index : INDEX_STRING) {
             paint.getTextBounds(index, 0, index.length(), indexBounds);//测量计算文字所在矩形，可以得到宽高
             measureWidth = Math.max(indexBounds.width(), measureWidth);//循环结束后，得到index的最大宽度
             measureHeight = Math.max(indexBounds.height(), measureHeight);//循环结束后，得到index的最大高度，然后*size
@@ -138,8 +128,8 @@ public class IndexBar extends View {
                     pressI = INDEX_STRING.length - 1;
                 }
                 //回调监听器
-                if (null != mOnIndexPressedListener && pressI > -1 && pressI < INDEX_STRING.length) {
-                    mOnIndexPressedListener.onIndexPressed(pressI, INDEX_STRING[pressI]);
+                if (null != onIndexPressedListener && pressI > -1 && pressI < INDEX_STRING.length) {
+                    onIndexPressedListener.onIndexPressed(pressI, INDEX_STRING[pressI]);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -147,8 +137,8 @@ public class IndexBar extends View {
             default:
                 setBackgroundResource(android.R.color.transparent);//手指抬起时背景恢复透明
                 //回调监听器
-                if (null != mOnIndexPressedListener) {
-                    mOnIndexPressedListener.onMotionEventEnd();
+                if (null != onIndexPressedListener) {
+                    onIndexPressedListener.onMotionEventEnd();
                 }
                 break;
         }
