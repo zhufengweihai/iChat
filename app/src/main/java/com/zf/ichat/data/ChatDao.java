@@ -6,6 +6,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.paging.LimitOffsetDataSource;
 
 import java.util.List;
 
@@ -58,6 +59,9 @@ public interface ChatDao {
 
     @Query("SELECT * FROM Contact ORDER BY pinyin ASC LIMIT :count OFFSET :offset")
     List<Contact> getContacts(int count, int offset);
+
+    @Query("SELECT * FROM Contact ORDER BY pinyin ASC")
+    LimitOffsetDataSource<Contact> getContacts();
 
     @Query("SELECT count(*) FROM Contact")
     int getContactCount();

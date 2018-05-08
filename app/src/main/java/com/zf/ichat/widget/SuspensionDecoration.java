@@ -69,8 +69,10 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childSize; i++) {
             final View child = parent.getChildAt(i);
             LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
-            int index = (int) parent.getAdapter().getItemId(layoutParams.getViewLayoutPosition());
-            drawTitleArea(c, left, right, child, layoutParams, index);
+            long index = parent.getAdapter().getItemId(layoutParams.getViewLayoutPosition());
+            if (index >= 0) {
+                drawTitleArea(c, left, right, child, layoutParams, (int) index);
+            }
         }
     }
 
@@ -78,9 +80,6 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
      * 绘制Title区域背景和文字的方法,最先调用，绘制在最下层
      */
     private void drawTitleArea(Canvas c, int left, int right, View child, LayoutParams params, int index) {
-        if (index < 0) {
-            return;
-        }
         paint.setColor(COLOR_TITLE_BG);
         c.drawRect(left, child.getTop() - params.topMargin - titleHeight, right, child.getTop() - params.topMargin,
                 paint);
