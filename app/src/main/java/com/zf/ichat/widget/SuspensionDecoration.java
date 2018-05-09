@@ -11,16 +11,9 @@ import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.util.TypedValue;
 import android.view.View;
 
-/**
- * 介绍：分类、悬停的Decoration
- * 作者：zhangxutong
- * 邮箱：mcxtzhang@163.com
- * 主页：http://blog.csdn.net/zxt0601
- * 时间： 2016/11/7.
- */
 public class SuspensionDecoration extends RecyclerView.ItemDecoration {
     private Paint paint;
-    private Rect bound;//用于存放测量文字Rect
+    private Rect bound;
 
     private int titleHeight;//title的高
     private static int COLOR_TITLE_BG = Color.parseColor("#FFDFDFDF");
@@ -35,28 +28,6 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         int textSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, resources.getDisplayMetrics());
         paint.setTextSize(textSize);
         paint.setAntiAlias(true);
-    }
-
-
-    public SuspensionDecoration setTitleHeight(int titleHeight) {
-        this.titleHeight = titleHeight;
-        return this;
-    }
-
-
-    public SuspensionDecoration setColorTitleBg(int colorTitleBg) {
-        COLOR_TITLE_BG = colorTitleBg;
-        return this;
-    }
-
-    public SuspensionDecoration setColorTitleFont(int colorTitleFont) {
-        COLOR_TITLE_FONT = colorTitleFont;
-        return this;
-    }
-
-    public SuspensionDecoration setTitleFontSize(int mTitleFontSize) {
-        paint.setTextSize(mTitleFontSize);
-        return this;
     }
 
     @Override
@@ -100,4 +71,7 @@ public class SuspensionDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    public interface SuspensionTitle {
+        String getTitle();
+    }
 }

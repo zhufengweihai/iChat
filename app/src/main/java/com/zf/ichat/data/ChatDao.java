@@ -65,4 +65,7 @@ public interface ChatDao {
 
     @Query("SELECT count(*) FROM Contact")
     int getContactCount();
+
+    @Query("SELECT * FROM Contact ORDER BY pinyin ASC")
+    int getPosition(String initials);
 }

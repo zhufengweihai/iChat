@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.zf.ichat.data.Contact;
 import com.zf.ichat.widget.IndexBar;
+import com.zf.ichat.widget.SuspensionDecoration;
 
 import java.util.Arrays;
 
@@ -34,10 +35,9 @@ public class ContactAdapter extends PagedListAdapter<Contact, ContactViewHolder>
 
     @Override
     public long getItemId(int position) {
-        int index = getIndex(getItem(position).getPinyin());
-        if (index != this.index) {
-            this.index = index;
-            return index;
+        Contact contact = getItem(position);
+        if (contact instanceof SuspensionDecoration.SuspensionTitle) {
+            return getIndex(contact.getPinyin());
         }
         return super.getItemId(position);
     }
