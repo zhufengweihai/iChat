@@ -44,7 +44,8 @@ public class ContactFragment extends Fragment {
             @Override
             public void onMotionEventEnd() {
                 indexView.setVisibility(View.GONE);
-                contactView.scrollToPosition(adapter.getPosition(indexView.getText().toString()));
+                viewModel.getPosition(indexView.getText().toString()).observe(ContactFragment.this, pos -> (
+                        (LinearLayoutManager) contactView.getLayoutManager()).scrollToPositionWithOffset(pos, 0));
             }
         });
 

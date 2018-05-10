@@ -33,4 +33,8 @@ public class ContactViewModel extends AndroidViewModel {
         }
         return contacts;
     }
+
+    public LiveData<Integer> getPosition(String initials){
+        return chatDao.getPosition(initials);
+    }
 }

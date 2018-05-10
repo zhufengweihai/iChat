@@ -66,6 +66,6 @@ public interface ChatDao {
     @Query("SELECT count(*) FROM Contact")
     int getContactCount();
 
-    @Query("SELECT * FROM Contact ORDER BY pinyin ASC")
-    int getPosition(String initials);
+    @Query("SELECT count(*) FROM Contact WHERE pinyin<:initials")
+    LiveData<Integer> getPosition(String initials);
 }
