@@ -25,6 +25,8 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.github.promeg.pinyinhelper.Pinyin;
+import com.tencent.wcdb.database.SQLiteCipherSpec;
+import com.tencent.wcdb.room.db.WCDBOpenHelperFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -40,7 +42,14 @@ public abstract class ChatDatabase extends RoomDatabase {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 Context ac = context.getApplicationContext();
-                INSTANCE = Room.databaseBuilder(ac, ChatDatabase.class, "chat.db").addCallback(new Callback() {
+
+                SQLiteCipherSpec cipherSpec = new SQLiteCipherSpec().setPageSize(4096).setKDFIteration(64000);
+
+                WCDBOpenHelperFactory factory = new WCDBOpenHelperFactory().passphrase("passphrase".getBytes())
+                        .cipherSpec(cipherSpec).writeAheadLoggingEnabled(true);
+
+                INSTANCE = Room.databaseBuilder(ac, ChatDatabase.class, "chat.db").allowMainThreadQueries()
+                        .openHelperFactory(factory).addCallback(new Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         initData(context);
